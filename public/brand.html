@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Premium Brand Console</title>
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(125% 125% at 50% 10%, #03001e 30%, #0c0014 70%, #05000a 100%);
+    }
+    .glass-card {
+      background: rgba(18, 5, 29, 0.45);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(216, 180, 254, 0.05);
+    }
+    .glass-card:hover {
+      border-color: rgba(216, 180, 254, 0.15);
+    }
+    .glow-amethyst:focus {
+      box-shadow: 0 0 15px rgba(216, 180, 254, 0.1);
+    }
+    .text-glow {
+      text-shadow: 0 0 8px rgba(216, 180, 254, 0.35);
+    }
+  </style>
+</head>
+<body class="text-purple-100 min-height-screen font-sans selection:bg-purple-500/30 selection:text-purple-200">
+
+  <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-purple-950/40 px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
+        <span>🏷️</span> NanoConnect
+      </h1>
+      <p class="text-[10px] text-purple-400 font-extrabold tracking-widest uppercase">Premium Corporate Console</p>
+    </div>
+    <div class="text-right">
+      <p class="font-bold text-sm text-purple-400 text-glow">Brand Admin</p>
+      <p class="text-[10px] text-purple-600 font-mono">ID: 1</p>
+    </div>
+  </header>
+
+  <div class="max-w-2xl mx-auto px-4 mt-8">
+    <div class="bg-slate-950/60 p-1.5 rounded-xl border border-purple-950 flex shadow-inner">
+      <a href="/" class="flex-1 text-center py-2.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition-all duration-300">
+        👤 Creator Portal
+      </a>
+      <a href="/brand.html" class="flex-1 text-center py-2.5 text-xs font-bold text-purple-400 bg-purple-500/10 border border-purple-500/20 rounded-lg shadow-sm transition-all duration-300">
+        🏷️ Brand Hub
+      </a>
+    </div>
+  </div>
+
+  <main class="max-w-xl mx-auto px-4 py-8">
+
+    <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-950/40 rounded-xl border border-slate-900 mb-8">
+      <button id="tab-campaigns" onclick="switchBrandTab('campaigns')" class="py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-purple-950/40">
+        🎯 Direct Campaigns
+      </button>
+      <button id="tab-marketplace" onclick="switchBrandTab('marketplace')" class="py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-purple-400 hover:text-purple-200">
+        🛒 Marketplace Products
+      </button>
+    </div>
+
+    <div id="section-campaigns" class="space-y-8">
+      <div>
+        <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-1.5">
+          <span>➕</span> Create New Campaign
+        </h2>
+        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
+          <div id="campaign-form-message" class="message hidden p-3 rounded-lg text-xs font-bold text-center"></div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Campaign Title</label>
+            <input type="text" id="title" placeholder="e.g. Thai Jasmine Rice Serum" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Description</label>
+            <textarea id="description" placeholder="Tell influencers what to promote..." class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst h-24 resize-none"></textarea>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Product URL</label>
+            <input type="text" id="product_url" placeholder="https://yourstore.com/product" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+            <p class="text-[10px] text-purple-600 font-medium">The destination link tracking clicks</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Required Hashtag</label>
+            <input type="text" id="required_hashtag" placeholder="#nanotest" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+            <p class="text-[10px] text-purple-600 font-medium">Mandatory for verifying organic reach posts</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Payout Per Post (₹)</label>
+            <input type="number" id="payout_per_post" placeholder="500" min="1" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-purple-200 glow-amethyst" />
+            <p class="text-[10px] text-purple-600 font-medium">Influencer gains 80%, platform retains 20% validation overhead</p>
+          </div>
+
+          <button onclick="createCampaign()" id="create-btn" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all duration-300">
+            🚀 Launch Campaign
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">
+          📋 Your Active Campaigns
+        </h2>
+        <div id="campaigns-list" class="space-y-4">
+          <p class="loading">Sourcing corporate history logs...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-marketplace" class="space-y-8" style="display: none;">
+      <div>
+        <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-1.5">
+          <span>➕</span> Add Product to Affiliate Marketplace
+        </h2>
+        <div class="glass-card rounded-2xl p-6 shadow-xl space-y-4">
+          <div id="marketplace-form-message" class="message hidden p-3 rounded-lg text-xs font-bold text-center"></div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Product Title</label>
+            <input type="text" id="market-title" placeholder="e.g. Vitamin C Face Serum" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Product Description</label>
+            <textarea id="market-description" placeholder="Retail specs for blog injections..." class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst h-20 resize-none"></textarea>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Checkout Destination URL</label>
+            <input type="text" id="market-product-url" placeholder="https://yourstore.com/checkout-item" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Display Image URL</label>
+            <input type="text" id="market-image-url" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-slate-200 glow-amethyst" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Retail Price (₹)</label>
+            <input type="number" id="market-price" placeholder="299" min="1" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-purple-200 glow-amethyst" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-purple-300">Affiliate Commission Offering (%)</label>
+            <input type="number" id="market-commission" placeholder="12.5" min="0" max="100" step="0.1" class="w-full bg-slate-950/60 border border-purple-950 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-500 transition-all text-purple-200 glow-amethyst" />
+            <p class="text-[10px] text-purple-600 font-medium">Percentage bounty paid to creators per recorded sales deal</p>
+          </div>
+
+          <button onclick="addProductToMarketplace()" id="market-btn" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition-all duration-300">
+            📥 List Product to Marketplace
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">
+          🛒 Your Listed Marketplace Inventory
+        </h2>
+
+        <div class="search-wrapper relative mb-4">
+          <input type="text" id="marketplace-search" placeholder="Search listed products..." oninput="handleMarketplaceSearch()" class="w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-purple-950/60 rounded-xl text-sm focus:border-purple-500 outline-none transition-all duration-300 text-slate-100 placeholder:text-slate-500 glow-amethyst" />
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🔍</span>
+        </div>
+
+        <div id="marketplace-list-container" class="space-y-4">
+          <p class="loading">Loading directory listings...</p>
+        </div>
+
+        <div id="pagination-wrapper" class="pagination-controls flex justify-between items-center p-3 bg-slate-950/40 border border-purple-950/40 rounded-xl mt-4" style="display: none;">
+          <button id="btn-prev-page" onclick="changeMarketplacePage(-1)" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-purple-950/40 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all">Previous</button>
+          <span id="pagination-indicator" class="text-xs font-semibold text-slate-400">Page 1 of 1</span>
+          <button id="btn-next-page" onclick="changeMarketplacePage(1)" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-purple-950/40 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 mt-8 border-t border-purple-950/60">
+      <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5">
+        <span>🖥️</span> Connected Native Blog Networks
+      </h2>
+      <p class="text-xs text-purple-400/80 leading-relaxed mb-4">
+        Your active ad campaign materials and matching keywords are dynamically integrated into the content streams of these partner blogs:
+      </p>
+      <div id="blog-network-list" class="space-y-3">
+        <p class="loading">Wired analytics checking live directories...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const BRAND_ID = 1;
+
+    let allMarketplaceItems = [];      
+    let filteredMarketplaceItems = []; 
+    let currentPage = 1;               
+    const itemsPerPage = 5;            
+
+    function switchBrandTab(target) {
+      const campBtn = document.getElementById('tab-campaigns');
+      const marketBtn = document.getElementById('tab-marketplace');
+      const campSection = document.getElementById('section-campaigns');
+      const marketSection = document.getElementById('section-marketplace');
+
+      if (target === 'campaigns') {
+        campSection.style.display = 'block';
+        marketSection.style.display = 'none';
+        campBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-purple-950/40";
+        marketBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-purple-400 hover:text-purple-200";
+        loadCampaigns();
+      } else {
+        campSection.style.display = 'none';
+        marketSection.style.display = 'block';
+        campBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-purple-400 hover:text-purple-200";
+        marketBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-purple-950/40";
+        loadBrandMarketplaceItems();
+      }
+    }
+
+    /*async function createCampaign() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const product_url = document.getElementById('product_url').value.trim();
+      const required_hashtag = document.getElementById('required_hashtag').value.trim();
+      const payout_per_post = parseFloat(document.getElementById('payout_per_post').value);
+
+      if (!title || !description || !product_url || !required_hashtag || !payout_per_post) {
+        showFormMessage('campaign-form-message', 'Please fill in all fields!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Launching...';
+
+      try {
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand_id: BRAND_ID, title, description, product_url, required_hashtag, payout_per_post })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showFormMessage('campaign-form-message', `✅ Campaign "${title}" launched successfully!`, 'success');
+          clearCampaignFields();
+          loadCampaigns();
+        } else {
+          showFormMessage('campaign-form-message', `❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showFormMessage('campaign-form-message', '❌ Could not connect to API networks.', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '🚀 Launch Campaign';
+    } */
+
+    async function createCampaign() {
+      // 1. Gather all data from the form fields
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const product_url = document.getElementById('product_url').value.trim();
+      const required_hashtag = document.getElementById('required_hashtag').value.trim();
+      const payout_per_post = parseFloat(document.getElementById('payout_per_post').value);
+
+      // 2. Simple validation
+      if (!title || !description || !product_url || !required_hashtag || isNaN(payout_per_post)) {
+        showFormMessage('campaign-form-message', 'Please fill in all fields correctly!', 'error');
+        return;
+      }
+
+      // 3. Set UI state to 'loading'
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Launching...';
+
+      try {
+        // 4. Send the POST request to your API
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            brand_id: BRAND_ID, 
+            title, 
+            description, 
+            product_url, 
+            required_hashtag, 
+            payout_per_post 
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // 5. On success, show success message and clear fields
+          showFormMessage('campaign-form-message', `✅ Campaign "${title}" launched successfully!`, 'success');
+          clearCampaignFields();
+          
+          // 6. CRITICAL: Wait for the list to be re-fetched from the server 
+          // so the new item appears in the UI
+          await loadCampaigns();
+        } else {
+          // 7. Show error message if the API returns an error
+          showFormMessage('campaign-form-message', `❌ ${data.error || 'Failed to launch'}`, 'error');
+        }
+      } catch (err) {
+        // 8. Handle network or connection errors
+        showFormMessage('campaign-form-message', '❌ Could not connect to API networks.', 'error');
+      } finally {
+        // 9. Reset button state
+        btn.disabled = false;
+        btn.textContent = '🚀 Launch Campaign';
+      }
+    }
+
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns');
+        const campaigns = await res.json();
+        console.log("Campaigns fetched:", campaigns); // Add this line
+        const container = document.getElementById('campaigns-list');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No active campaigns cataloged.</p>';
+          return;
+        }
+
+        container.innerHTML = campaigns.map(camp => `
+          <div class="glass-card rounded-xl p-5 shadow-lg transition-all duration-300">
+            <h4 class="text-sm font-bold text-slate-200 mb-1">${camp.title}</h4>
+            <p class="text-xs text-purple-300/80 leading-relaxed mb-4">${camp.description}</p>
+            <div class="flex justify-between items-center text-xs border-t border-purple-950/40 pt-3 flex-wrap gap-2">
+              <span class="text-emerald-400 font-extrabold text-sm">₹${camp.payout_per_post} per post</span>
+              <span class="bg-purple-500/10 text-purple-400 text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-purple-500/20">${camp.required_hashtag}</span>
+              <span class="text-[10px] text-purple-600 font-mono">🔗 ${camp.product_url.substring(0, 20)}...</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<p class="loading text-red-400">Failed to load campaigns.</p>';
+      }
+    }
+
+    async function addProductToMarketplace() {
+      const title = document.getElementById('market-title').value.trim();
+      const description = document.getElementById('market-description').value.trim();
+      const product_url = document.getElementById('market-product-url').value.trim();
+      const image_url = document.getElementById('market-image-url').value.trim();
+      const price = parseFloat(document.getElementById('market-price').value);
+      const commission_percentage = parseFloat(document.getElementById('market-commission').value);
+
+      if (!title || !description || !product_url || isNaN(price) || isNaN(commission_percentage)) {
+        showFormMessage('marketplace-form-message', 'Please fill out all required fields!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('market-btn');
+      btn.disabled = true;
+      btn.textContent = 'Listing...';
+
+      try {
+        const res = await fetch('/api/marketplace', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand_id: BRAND_ID, title, description, product_url, image_url, price, commission_percentage })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showFormMessage('marketplace-form-message', `✅ Product "${title}" listed successfully!`, 'success');
+          clearMarketplaceFields();
+          await loadBrandMarketplaceItems();
+        } else {
+          showFormMessage('marketplace-form-message', `❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showFormMessage('marketplace-form-message', '❌ Could not publish catalog elements.', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '📥 List Product to Marketplace';
+    }
+
+    async function loadBrandMarketplaceItems() {
+      const container = document.getElementById('marketplace-list-container');
+      container.innerHTML = '<p class="loading">Retrieving catalog datasets...</p>';
+      document.getElementById('pagination-wrapper').style.display = 'none';
+
+      try {
+        const res = await fetch('/api/marketplace');
+        const products = await res.json();
+
+        allMarketplaceItems = products.filter(p => p.brand_id === BRAND_ID);
+        filteredMarketplaceItems = [...allMarketplaceItems];
+        currentPage = 1;
+        document.getElementById('marketplace-search').value = '';
+
+        renderMarketplaceDisplayPage();
+      } catch (err) {
+        container.innerHTML = '<p class="loading text-red-400">Failed to load marketplace catalog.</p>';
+      }
+    } 
+
+     function handleMarketplaceSearch() {
+      const searchQuery = document.getElementById('marketplace-search').value.toLowerCase().trim();
+      filteredMarketplaceItems = allMarketplaceItems.filter(item => {
+        const titleMatch = item.title ? item.title.toLowerCase().includes(searchQuery) : false;
+        const descMatch = item.description ? item.description.toLowerCase().includes(searchQuery) : false;
+        return titleMatch || descMatch;
+      });
+      currentPage = 1;
+      renderMarketplaceDisplayPage();
+    }                 
+
+    function renderMarketplaceDisplayPage() {
+      const container = document.getElementById('marketplace-list-container');
+      const paginationWrapper = document.getElementById('pagination-wrapper');
+
+      if (!filteredMarketplaceItems.length) {
+        container.innerHTML = '<p class="loading">No matching items cataloged.</p>';
+        paginationWrapper.style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredMarketplaceItems.length / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedItems = filteredMarketplaceItems.slice(startIndex, endIndex);
+
+      container.innerHTML = paginatedItems.map(item => `
+        <div class="glass-card rounded-xl p-4 flex gap-4 items-start shadow-md transition-all duration-300">
+          ${item.image_url ? `<img src="${item.image_url}" class="w-12 h-12 object-cover rounded-lg border border-purple-950 shadow-inner" onerror="this.style.display='none'" />` : ''}
+          <div class="flex-1">
+            <h4 class="text-sm font-bold text-slate-200 mb-1">${item.title}</h4>
+            <p class="text-xs text-purple-300/80 leading-relaxed mb-3">${item.description}</p>
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-extrabold text-slate-100">₹${item.price}</span>
+              <span class="text-emerald-400 font-extrabold">💰 ${item.commission_percentage}% Commission</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      if (filteredMarketplaceItems.length > itemsPerPage) {
+        paginationWrapper.style.display = 'flex';
+        document.getElementById('pagination-indicator').textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById('btn-prev-page').disabled = (currentPage === 1);
+        document.getElementById('btn-next-page').disabled = (currentPage === totalPages);
+      } else {
+        paginationWrapper.style.display = 'none';
+      }
+    }
+
+    function changeMarketplacePage(direction) {
+      const totalPages = Math.ceil(filteredMarketplaceItems.length / itemsPerPage);
+      const targetPage = currentPage + direction;
+
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        renderMarketplaceDisplayPage();
+        document.getElementById('marketplace-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    async function loadBlogNetworks() {
+      try {
+        const res = await fetch('/api/blogs');
+        const blogs = await res.json();
+        const listContainer = document.getElementById('blog-network-list');
+        
+        if (!blogs.length) {
+          listContainer.innerHTML = '<p class="loading">No blogging networks connected yet.</p>';
+          return;
+        }
+        
+        listContainer.innerHTML = blogs.map(blog => `
+          <div class="glass-card rounded-xl p-4 flex justify-between items-center shadow-md transition-all duration-300">
+            <div>
+              <div class="font-bold text-sm text-slate-200">${blog.site_name}</div>
+              <a href="${blog.url_path}" target="_blank" class="text-[10px] text-purple-400 hover:text-purple-300 font-bold tracking-tight transition-colors">Launch Partner Website ↗</a>
+            </div>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded border ${blog.category === 'beauty' ? 'bg-pink-500/10 text-pink-400 border-pink-500/20' : 'bg-sky-500/10 text-sky-400 border-sky-500/20'}">
+              ${blog.category}
+            </span>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('blog-network-list').innerHTML = '<p class="loading text-red-400">Failed to synchronize blog listings.</p>';
+      }
+    }
+
+    function clearCampaignFields() {
+      ['title', 'description', 'product_url', 'required_hashtag', 'payout_per_post']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+
+    function clearMarketplaceFields() {
+      ['market-title', 'market-description', 'market-product-url', 'market-image-url', 'market-price', 'market-commission']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+
+    function showFormMessage(targetId, text, type) {
+      const msg = document.getElementById(targetId);
+      msg.textContent = text;
+      msg.className = `message p-3 rounded-xl text-center text-xs font-bold border transition-all duration-300 ${type === 'success' ? 'bg-purple-950/80 text-purple-400 border-purple-800' : 'bg-rose-950/80 text-rose-400 border-rose-800'}`;
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 5000);
+    }
+
+    // ── Execute System Framework ──
+    loadCampaigns();
+    loadBlogNetworks();
+    loadBrandMarketplaceItems(); // Add this line to load products immediately
+  </script>
+
+</body>
+</html>

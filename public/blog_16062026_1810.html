@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Native News Network</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; }
+    .nav { background: #1e293b; color: white; padding: 15px; text-align: center; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    .hero { background: white; max-width: 800px; margin: 20px auto; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    h1 { color: #0f172a; text-transform: capitalize; }
+    .article-body { font-size: 16px; line-height: 1.8; color: #475569; margin-bottom: 30px; }
+    
+    /* Native Ad Widget Styling */
+    .native-ad-box { background: #f0fdf4; border: 2px dashed #22c55e; border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .ad-badge { background: #22c55e; color: white; font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .ad-title { font-size: 18px; font-weight: bold; color: #166534; margin: 8px 0 4px 0; }
+    .ad-link { display: inline-block; background: #22c55e; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
+    .loading { text-align: center; color: #94a3b8; }
+  </style>
+</head>
+<body>
+
+  <div class="nav" id="blog-nav">📰 Global Publisher Network</div>
+
+  <div class="hero">
+    <h1 id="blog-heading">Loading Article...</h1>
+    <div class="article-body" id="blog-content">
+      Generating contextual content streams...
+    </div>
+
+    <div id="native-ads-container">
+      <p class="loading">Scanning for contextually relevant brand campaigns...</p>
+    </div>
+  </div>
+
+  <script>
+    // 1. Extract the category from the URL string parameters (e.g., ?category=beauty)
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category') || 'travel';
+
+    // 2. Adjust page text dynamically based on the niche
+    document.getElementById('blog-nav').innerText = `📰 Live ${category} Trends Monitor`;
+    document.getElementById('blog-heading').innerText = `The Absolute Best Guide to Modern ${category} in 2026`;
+    
+    // Simple placeholder article content that adapts dynamically
+    document.getElementById('blog-content').innerText = `Consumers are completely redefining how they approach their daily routines. Navigating the choices available in the ${category} marketplace can feel overwhelming, but making conscious decisions ensures long-term satisfaction. Below, we look at the top community-voted recommendations currently making waves across active social ecosystems:`;
+
+    // 3. Fetch matching inventory items from your backend match endpoint
+    async function fetchContextualAds() {
+      try {
+        const res = await fetch(`/api/blogs/match?category=${category}`);
+        const items = await res.json();
+        const container = document.getElementById('native-ads-container');
+
+        if (!items || !items.length) {
+          container.innerHTML = '<p class="loading">No active matching promotions for this niche today.</p>';
+          return;
+        }
+
+        // Render matching items cleanly inside the blog post
+        container.innerHTML = `
+          <h3>Sponsored Community Spotlights</h3>
+          ` + items.map(item => `
+            <div class="native-ad-box">
+              <span class="ad-badge">Featured Partner</span>
+              <div class="ad-title">${item.title}</div>
+              <p style="font-size:14px; margin: 5px 0;">${item.description}</p>
+              <a href="/r/${item.id}" target="_blank" class="ad-link">Explore Deal Now ↗</a>
+            </div>
+          `).join('');
+
+      } catch (err) {
+        document.getElementById('native-ads-container').innerHTML = '<p class="loading">Contextual placement matching offline.</p>';
+      }
+    }
+
+    fetchContextualAds();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Premium Portal Access</title>
+  
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(125% 125% at 50% 10%, #020617 35%, #070a1e 75%, #02040a 100%);
+    }
+    
+    .glass-card {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    
+    .glow-cyan:focus {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* Subtle animation for the ambient glowing blur spots in background */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); opacity: 0.3; }
+      50% { transform: translateY(-20px) scale(1.1); opacity: 0.5; }
+    }
+    
+    .ambient-glow-1 {
+      animation: float 8s ease-in-out infinite;
+    }
+    .ambient-glow-2 {
+      animation: float 12s ease-in-out infinite;
+      animation-delay: -4s;
+    }
+
+    /* Elegant transition class for the sliding optional fields */
+    .expand-transition {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    
+    .expand-transition.open {
+      max-height: 110px;
+      opacity: 1;
+      margin-bottom: 1rem;
+    }
+
+    /* Animation fade in for the bypass button */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen font-sans flex items-center justify-center p-4 relative overflow-x-hidden overflow-y-auto selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Ambient Cosmic Glow Spots -->
+  <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-sky-500/10 rounded-full blur-[100px] ambient-glow-1 pointer-events-none"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] ambient-glow-2 pointer-events-none"></div>
+
+  <div class="w-full max-w-md relative z-10 my-8">
+    
+    <!-- Top Branding Header -->
+    <div class="flex flex-col items-center mb-6">
+      <div class="w-14 h-14 bg-gradient-to-tr from-sky-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20 mb-4 transition-transform hover:scale-105 duration-300">
+        <span class="text-2xl">🔗</span>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+        NanoConnect
+      </h1>
+      <p class="text-[10px] text-sky-400 font-extrabold tracking-widest uppercase mt-1">
+        Secure Platform Access
+      </p>
+    </div>
+
+    <!-- Glassmorphic Tabs Selector -->
+    <div class="flex bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/80 mb-6 max-w-xs mx-auto">
+      <button id="tab-login" class="flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-sky-400 bg-slate-900/80 border border-slate-800" onclick="switchTab('login')">Sign In</button>
+      <button id="tab-register" class="flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-slate-200" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <div class="glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden transition-all duration-500">
+      
+      <!-- Top Card Border Accent Line -->
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-sky-500/50 to-transparent"></div>
+      
+      <!-- Live Interactive Messages Box -->
+      <div id="message" class="hidden p-4 rounded-xl text-xs font-bold text-center mb-6 border transition-all duration-300"></div>
+
+      <form id="auth-form" onsubmit="handleSubmit(event)" class="space-y-4">
+        
+        <!-- Registration ONLY - Full Name -->
+        <div class="form-group reg-only" style="display: none;">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" for="name">Full Name</label>
+          <input type="text" id="name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-sm focus:border-sky-500 outline-none transition-all duration-300 text-slate-200 placeholder:text-slate-600 glow-cyan" />
+        </div>
+
+        <!-- Universal Email Input -->
+        <div class="form-group">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" for="email">Email Address</label>
+          <input type="email" id="email" placeholder="creator@example.com" required class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-sm focus:border-sky-500 outline-none transition-all duration-300 text-slate-200 placeholder:text-slate-600 glow-cyan" />
+        </div>
+
+        <!-- Universal Password Input -->
+        <div class="form-group">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-sm focus:border-sky-500 outline-none transition-all duration-300 text-slate-200 placeholder:text-slate-600 glow-cyan" />
+        </div>
+
+        <!-- Registration ONLY - Account Role Dropdown -->
+        <div class="form-group reg-only" style="display: none;">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" for="role">Account Role</label>
+          <div class="relative">
+            <select id="role" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-sm focus:border-sky-500 outline-none transition-all duration-300 text-slate-200 appearance-none glow-cyan">
+              <option value="creator" selected class="bg-slate-900">Creator (Default)</option>
+              <option value="brand" class="bg-slate-900">Brand / Advertiser</option>
+            </select>
+            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-xs">▼</span>
+          </div>
+        </div>
+
+        <!-- Registration ONLY - Twitter Handle -->
+        <div class="form-group reg-only" style="display: none;">
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" for="twitter_handle">X (Twitter) Handle</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">@</span>
+            <input type="text" id="twitter_handle" placeholder="RMWorkz" class="w-full pl-8 pr-4 py-3 bg-slate-950/60 border border-slate-800/80 rounded-xl text-sm focus:border-sky-500 outline-none transition-all duration-300 text-slate-200 placeholder:text-slate-600 glow-cyan" />
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full mt-2 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 hover:opacity-95 text-white font-extrabold text-xs py-4 rounded-xl shadow-lg shadow-sky-500/10 hover:shadow-sky-500/20 active:scale-[0.98] transition-all duration-300 uppercase tracking-wider">
+          Sign In
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'login';
+
+    // Toggle Tab Panels System
+    function switchTab(mode) {
+      currentMode = mode;
+      const regFields = document.querySelectorAll('.reg-only');
+      const submitBtn = document.getElementById('submit-btn');
+      const msgBox = document.getElementById('message');
+      
+      msgBox.className = 'hidden'; // Clear operational alerts on transitions
+
+      // Reset Active Tabs styling
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+
+      if (mode === 'register') {
+        tabRegister.className = 'flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-sky-400 bg-slate-900/80 border border-slate-800';
+        tabLogin.className = 'flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-slate-200';
+
+        regFields.forEach(el => el.style.display = 'block');
+        document.getElementById('name').required = true;
+        document.getElementById('twitter_handle').required = true;
+        submitBtn.textContent = 'Create Account';
+      } else {
+        tabLogin.className = 'flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-sky-400 bg-slate-900/80 border border-slate-800';
+        tabRegister.className = 'flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 text-slate-400 hover:text-slate-200';
+
+        regFields.forEach(el => el.style.display = 'none');
+        document.getElementById('name').required = false;
+        document.getElementById('twitter_handle').required = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    }
+
+    // Direct local bypass simulation configuration handler (if your DB isn't running)
+    function launchDemoSession() {
+      const emailInput = document.getElementById('email').value.trim() || 'creator@example.com';
+      const nameInput = document.getElementById('name').value.trim() || 'Clara Influencer';
+      const handleInput = document.getElementById('twitter_handle').value.trim() || 'RMWorkz';
+      const selectedRole = document.getElementById('role').value || 'creator';
+      const msgBox = document.getElementById('message');
+
+      msgBox.textContent = '⚡ Loading offline demo profile... redirecting...';
+      msgBox.className = 'p-4 rounded-xl text-xs font-bold text-center mb-6 border bg-sky-950/40 text-sky-400 border-sky-900/60 block';
+
+      // Load mock simulation data packages directly to bypass local storage blocks
+      localStorage.setItem('token', 'offline_simulated_bypass_key_2026');
+      const mockSessionUser = {
+        id: 1,
+        username: nameInput,
+        email: emailInput,
+        role: selectedRole,
+        twitter_handle: handleInput
+      };
+      localStorage.setItem('user', JSON.stringify(mockSessionUser));
+
+      setTimeout(() => {
+        if (selectedRole === 'brand') {
+          window.location.href = '/brand.html';
+        } else {
+          window.location.href = '/index.html';
+        }
+      }, 1000);
+    }
+
+    // Submit Dispatch Handler to Backend API Endpoints
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const msgBox = document.getElementById('message');
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const name = document.getElementById('name').value.trim();
+      const role = document.getElementById('role').value;
+      const twitter_handle = document.getElementById('twitter_handle').value.trim();
+
+      submitBtn.disabled = true;
+      msgBox.className = 'hidden';
+
+      const endpoint = currentMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const payload = currentMode === 'login' 
+        ? { email, password } 
+        : { name, email, password, role, twitter_handle };
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          if (currentMode === 'login') {
+            msgBox.textContent = '✅ Success! Redirecting to dashboard...';
+            msgBox.className = 'p-4 rounded-xl text-xs font-bold text-center mb-6 border bg-emerald-950/40 text-emerald-400 border-emerald-900/60 block';
+            
+            // Save Token and user context to local storage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Redirect context to dashboard
+            setTimeout(() => { 
+              if (data.user && data.user.role === 'brand') {
+                window.location.href = '/brand.html'; 
+              } else {
+                window.location.href = '/index.html'; 
+              }
+            }, 1200);
+          } else {
+            msgBox.textContent = '✅ Registration successful! Switching to sign-in...';
+            msgBox.className = 'p-4 rounded-xl text-xs font-bold text-center mb-6 border bg-emerald-950/40 text-emerald-400 border-emerald-900/60 block';
+            document.getElementById('auth-form').reset();
+            setTimeout(() => { switchTab('login'); }, 2000);
+          }
+        } else {
+          msgBox.textContent = `❌ Error: ${data.error || 'Authentication failed'}`;
+          msgBox.className = 'p-4 rounded-xl text-xs font-bold text-center mb-6 border bg-rose-950/40 text-rose-400 border-rose-900/60 block';
+        }
+      } catch (err) {
+        // Fallback option in case of network failures or offline mode during local development
+        msgBox.innerHTML = `
+          <div class="flex flex-col gap-3 items-center">
+            <span class="text-rose-400">❌ Local server offline (Network Error).</span>
+            <button type="button" onclick="launchDemoSession()" class="animate-fade-in bg-gradient-to-r from-sky-400 to-indigo-500 hover:from-sky-500 hover:to-indigo-600 text-white font-black text-[10px] tracking-wider uppercase px-4 py-2.5 rounded-lg transition-all duration-300 shadow-md">
+              ⚡ Launch Classy Demo Mode
+            </button>
+          </div>
+        `;
+        msgBox.className = 'p-4 rounded-xl text-xs font-bold text-center mb-6 border bg-rose-950/40 text-rose-400 border-rose-900/60 block';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

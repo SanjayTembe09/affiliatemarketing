@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Checkout Simulator</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #f1f5f9; padding: 40px; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .product-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-width: 400px; text-align: center; }
+    .store-badge { background: #3b82f6; color: white; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+    h1 { color: #1e293b; margin-top: 15px; font-size: 24px; }
+    .price { font-size: 28px; font-weight: bold; color: #0f172a; margin: 15px 0; }
+    .buy-btn { display: block; width: 100%; background: #2563eb; color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+    .buy-btn:hover { background: #1d4ed8; }
+    .status-msg { margin-top: 15px; font-size: 14px; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <div class="product-card">
+    <span class="store-badge">🔒 Secure E-Commerce Checkout</span>
+    <h1 id="product-title">Loading Product...</h1>
+    <div class="price">₹500.00</div>
+    <p style="color:#64748b; font-size:14px;">Simulate a real consumer checkout purchase sequence to trigger the tracking conversion loop.</p>
+    
+    <button class="buy-btn" onclick="simulatePurchase()">💳 Complete Purchase (Buy Now)</button>
+    <div class="status-msg" id="status"></div>
+  </div>
+
+  <script>
+    // Extract parameters from URL passed by our redirect engine
+    const urlParams = new URLSearchParams(window.location.search);
+    const campaignId = urlParams.get('campaignId');
+    const campaignTitle = urlParams.get('title') || 'Premium Deal';
+
+    document.getElementById('product-title').innerText = campaignTitle;
+
+    async function simulatePurchase() {
+      const statusDiv = document.getElementById('status');
+      statusDiv.style.color = '#3b82f6';
+      statusDiv.innerText = "Processing checkout transaction...";
+
+      try {
+        // Send webhook notification conversion payload back to our API
+        const response = await fetch('/api/submissions/conversion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            campaignId: campaignId,
+            orderTotal: 500.00
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          statusDiv.style.color = '#16a34a';
+          statusDiv.innerText = "🎉 Order Success! Webhook fired. Commission credited to creator dashboard.";
+        } else {
+          statusDiv.style.color = '#dc2626';
+          statusDiv.innerText = "Conversion error: " + data.message;
+        }
+      } catch (err) {
+        statusDiv.style.color = '#dc2626';
+        statusDiv.innerText = "Failed to communicate with API server.";
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Brand Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #7c3aed;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 { font-size: 22px; font-weight: 700; }
+    header p { font-size: 13px; opacity: 0.85; }
+
+    .nav {
+      background: white;
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .nav a {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .nav a.active { color: #7c3aed; border-bottom: 3px solid #7c3aed; }
+
+    /* Dashboard sub-navigation view toggle */
+    .view-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .view-toggle button {
+      flex: 1;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .container { max-width: 520px; margin: 0 auto; padding: 20px 16px; }
+
+    h2 { font-size: 18px; color: #1e293b; margin-bottom: 16px; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus { border-color: #7c3aed; }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    button {
+      width: 100%;
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    button:hover { background: #6d28d9; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .message {
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    .message.success { background: #f3e8ff; color: #6d28d9; display: block; }
+    .message.error { background: #fee2e2; color: #991b1b; display: block; }
+
+    .list-item-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .list-item-card h4 { font-size: 15px; color: #1e293b; margin-bottom: 4px; }
+    .list-item-card p { font-size: 13px; color: #64748b; margin-bottom: 10px; }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stat-payout { color: #16a34a; font-weight: 700; font-size: 15px; }
+
+    .badge-tag {
+      background: #f3e8ff;
+      color: #7c3aed;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .sub-info { font-size: 12px; color: #94a3b8; }
+    .loading { text-align: center; color: #94a3b8; font-size: 14px; padding: 20px; }
+    .hint { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+    /* ── Added Filtering & Pagination UI Component Styles ── */
+    .search-wrapper {
+      margin-bottom: 14px;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .pagination-controls button {
+      width: auto;
+      padding: 6px 14px;
+      margin-top: 0;
+      font-size: 13px;
+    }
+
+    .pagination-status {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🏷️ NanoConnect</h1>
+      <p>Brand Dashboard</p>
+    </div>
+    <div style="text-align:right">
+      <p style="font-weight:600">Brand Admin</p>
+      <p style="font-size:12px; opacity:0.7">ID: 1</p>
+    </div>
+  </header>
+
+  <div class="nav">
+    <a href="/">👤 Creator View</a>
+    <a href="/brand.html" class="active">🏷️ Brand View</a>
+  </div>
+
+  <div class="container">
+
+    <div class="view-toggle">
+      <button id="tab-campaigns" onclick="switchBrandTab('campaigns')" style="background: #7c3aed; color: white;">🎯 Direct Campaigns</button>
+      <button id="tab-marketplace" onclick="switchBrandTab('marketplace')" style="background: #e2e8f0; color: #475569;">🛒 Marketplace Products</button>
+    </div>
+
+    <div id="section-campaigns">
+      <h2>➕ Create New Campaign</h2>
+      <div class="card">
+        <div id="campaign-form-message" class="message"></div>
+
+        <div class="form-group">
+          <label>Campaign Title</label>
+          <input type="text" id="title" placeholder="e.g. Thai Jasmine Rice Serum" />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="description" placeholder="Tell influencers what to promote..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Product URL</label>
+          <input type="text" id="product_url" placeholder="https://yourstore.com/product" />
+          <p class="hint">The link influencers will include in their post</p>
+        </div>
+
+        <div class="form-group">
+          <label>Required Hashtag</label>
+          <input type="text" id="required_hashtag" placeholder="#nanotest" />
+          <p class="hint">Influencers must include this in their post</p>
+        </div>
+
+        <div class="form-group">
+          <label>Payout Per Post (₹)</label>
+          <input type="number" id="payout_per_post" placeholder="500" min="1" />
+          <p class="hint">Creator gets 80% (₹400), app keeps 20% (₹100)</p>
+        </div>
+
+        <button onclick="createCampaign()" id="create-btn">🚀 Launch Campaign</button>
+      </div>
+
+      <h2>📋 Your Active Campaigns</h2>
+      <div id="campaigns-list">
+        <p class="loading">Loading campaigns...</p>
+      </div>
+    </div>
+
+    <div id="section-marketplace" style="display: none;">
+      <h2>➕ Add Product to Affiliate Marketplace</h2>
+      <div class="card">
+        <div id="marketplace-form-message" class="message"></div>
+
+        <div class="form-group">
+          <label>Product Title</label>
+          <input type="text" id="market-title" placeholder="e.g. Minimalist 10% Vitamin C Face Serum" />
+        </div>
+
+        <div class="form-group">
+          <label>Product Description</label>
+          <textarea id="market-description" placeholder="Provide retail specifications for contextual blog injections..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Store Checkout Destination URL</label>
+          <input type="text" id="market-product-url" placeholder="https://yourstore.com/checkout-item" />
+          <p class="hint">Target checkout destination redirected via affiliate links</p>
+        </div>
+
+        <div class="form-group">
+          <label>Display Image URL</label>
+          <input type="text" id="market-image-url" placeholder="https://images.unsplash.com/... or hosted image path" />
+        </div>
+
+        <div class="form-group">
+          <label>Retail Price (₹)</label>
+          <input type="number" id="market-price" placeholder="299" min="1" />
+        </div>
+
+        <div class="form-group">
+          <label>Affiliate Commission Offering (%)</label>
+          <input type="number" id="market-commission" placeholder="12.5" min="0" max="100" step="0.1" />
+          <p class="hint">Percentage payout allocated to creators per generated sale conversion</p>
+        </div>
+
+        <button onclick="addProductToMarketplace()" id="market-btn">📥 List Product to Marketplace</button>
+      </div>
+
+      <h2>🛒 Your Listed Marketplace Inventory</h2>
+      
+      <div class="search-wrapper">
+        <input type="text" id="marketplace-search" placeholder="🔍 Search products by title or keywords..." oninput="handleMarketplaceSearch()" />
+      </div>
+
+      <div id="marketplace-list-container">
+        <p class="loading">Loading marketplace directory...</p>
+      </div>
+
+      <div id="pagination-wrapper" class="pagination-controls" style="display: none;">
+        <button id="btn-prev-page" onclick="changeMarketplacePage(-1)">Previous</button>
+        <span id="pagination-indicator" class="pagination-status">Page 1 of 1</span>
+        <button id="btn-next-page" onclick="changeMarketplacePage(1)">Next</button>
+      </div>
+    </div>
+
+    <h2>🖥️ Connected Native Blog Networks</h2>
+    <div class="card">
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+        Your matching inventory items and campaign keywords are contextually matched into the reading patterns of these active tracking networks:
+      </p>
+      <div id="blog-network-list" style="display: flex; flex-direction: column; gap: 12px;">
+        <p class="loading" style="padding: 10px 0;">Loading live directories...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const BRAND_ID = 1;
+
+    // ── Global Architectural State Variables For Inventory Optimization ──
+    let allMarketplaceItems = [];      // Unfiltered storage baseline array
+    let filteredMarketplaceItems = []; // Array keeping track of matching items
+    let currentPage = 1;               // Current layout location focus index
+    const itemsPerPage = 5;            // Limits long catalog walls (Set to 5 items max for display layout validation)
+
+    // ── Tab Layout Navigation Switcher ───────────────────────
+    function switchBrandTab(target) {
+      const campBtn = document.getElementById('tab-campaigns');
+      const marketBtn = document.getElementById('tab-marketplace');
+      const campSection = document.getElementById('section-campaigns');
+      const marketSection = document.getElementById('section-marketplace');
+
+      if (target === 'campaigns') {
+        campSection.style.display = 'block';
+        marketSection.style.display = 'none';
+        campBtn.style.cssText = 'background: #7c3aed; color: white;';
+        marketBtn.style.cssText = 'background: #e2e8f0; color: #475569;';
+        loadCampaigns();
+      } else {
+        campSection.style.display = 'none';
+        marketSection.style.display = 'block';
+        campBtn.style.cssText = 'background: #e2e8f0; color: #475569;';
+        marketBtn.style.cssText = 'background: #7c3aed; color: white;';
+        loadBrandMarketplaceItems();
+      }
+    }
+
+    // ── Create Campaign ─────────────────────────────
+    async function createCampaign() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const product_url = document.getElementById('product_url').value.trim();
+      const required_hashtag = document.getElementById('required_hashtag').value.trim();
+      const payout_per_post = parseFloat(document.getElementById('payout_per_post').value);
+
+      if (!title || !description || !product_url || !required_hashtag || !payout_per_post) {
+        showFormMessage('campaign-form-message', 'Please fill in all fields!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Launching...';
+
+      try {
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand_id: BRAND_ID, title, description, product_url, required_hashtag, payout_per_post })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showFormMessage('campaign-form-message', `✅ Campaign "${title}" launched successfully!`, 'success');
+          clearCampaignFields();
+          loadCampaigns();
+        } else {
+          showFormMessage('campaign-form-message', `❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showFormMessage('campaign-form-message', '❌ Could not reach server.', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '🚀 Launch Campaign';
+    }
+
+    // ── Load Campaigns ──────────────────────────────
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns');
+        const campaigns = await res.json();
+        const container = document.getElementById('campaigns-list');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No campaigns yet. Create one above!</p>';
+          return;
+        }
+
+        container.innerHTML = campaigns.map(camp => `
+          <div class="list-item-card">
+            <h4>${camp.title}</h4>
+            <p>${camp.description}</p>
+            <div class="meta-row">
+              <span class="stat-payout">₹${camp.payout_per_post} per post</span>
+              <span class="badge-tag">${camp.required_hashtag}</span>
+              <span class="sub-info">🔗 ${camp.product_url.substring(0, 26)}...</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<p class="loading">Failed to load campaigns.</p>';
+      }
+    }
+
+    // ── Add Product to Affiliate Marketplace ─────────────────
+    async function addProductToMarketplace() {
+      const title = document.getElementById('market-title').value.trim();
+      const description = document.getElementById('market-description').value.trim();
+      const product_url = document.getElementById('market-product-url').value.trim();
+      const image_url = document.getElementById('market-image-url').value.trim();
+      const price = parseFloat(document.getElementById('market-price').value);
+      const commission_percentage = parseFloat(document.getElementById('market-commission').value);
+
+      if (!title || !description || !product_url || isNaN(price) || isNaN(commission_percentage)) {
+        showFormMessage('marketplace-form-message', 'Please fill out all structural required entry layers!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('market-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing Repository Insertion...';
+
+      try {
+        const res = await fetch('/api/marketplace', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand_id: BRAND_ID, title, description, product_url, image_url, price, commission_percentage })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showFormMessage('marketplace-form-message', `✅ Product "${title}" published to marketplace!`, 'success');
+          clearMarketplaceFields();
+          loadBrandMarketplaceItems();
+        } else {
+          showFormMessage('marketplace-form-message', `❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showFormMessage('marketplace-form-message', '❌ Transmission pipeline breakdown linking server database.', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '📥 List Product to Marketplace';
+    }
+
+    // ── Load Brand Marketplace Items ────────────────────────
+    async function loadBrandMarketplaceItems() {
+      const container = document.getElementById('marketplace-list-container');
+      container.innerHTML = '<p class="loading">Retrieving catalog layers...</p>';
+      document.getElementById('pagination-wrapper').style.display = 'none';
+
+      try {
+        const res = await fetch('/api/marketplace');
+        const products = await res.json();
+
+        // Target matching profile items owned by this specific brand identity
+        allMarketplaceItems = products.filter(p => p.brand_id === BRAND_ID);
+        
+        // Match base operational filtering array array state
+        filteredMarketplaceItems = [...allMarketplaceItems];
+        
+        // Reset navigation location point layer index to top base page
+        currentPage = 1;
+        document.getElementById('marketplace-search').value = '';
+
+        renderMarketplaceDisplayPage();
+      } catch (err) {
+        container.innerHTML = '<p class="loading">Error synchronizing affiliate catalog.</p>';
+      }
+    }
+
+    // ── Added Operational Search Execution Engine ──
+    function handleMarketplaceSearch() {
+      const searchQuery = document.getElementById('marketplace-search').value.toLowerCase().trim();
+      
+      // Filter out inventory dataset tracking strings matching structural attributes
+      filteredMarketplaceItems = allMarketplaceItems.filter(item => {
+        const titleMatch = item.title ? item.title.toLowerCase().includes(searchQuery) : false;
+        const descMatch = item.description ? item.description.toLowerCase().includes(searchQuery) : false;
+        return titleMatch || descMatch;
+      });
+
+      // Jump selection focus context stack down to initialization index frame
+      currentPage = 1;
+      renderMarketplaceDisplayPage();
+    }
+
+    // ── Added Operational Pagination Slicing Layer Rendering Engine ──
+    function renderMarketplaceDisplayPage() {
+      const container = document.getElementById('marketplace-list-container');
+      const paginationWrapper = document.getElementById('pagination-wrapper');
+
+      if (!filteredMarketplaceItems.length) {
+        container.innerHTML = '<p class="loading">No matching items or listed inventory available.</p>';
+        paginationWrapper.style.display = 'none';
+        return;
+      }
+
+      // Calculate operational boundary values for page configuration metrics
+      const totalPages = Math.ceil(filteredMarketplaceItems.length / itemsPerPage);
+      
+      // Math indices tracking data layer slice arrays
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedItems = filteredMarketplaceItems.slice(startIndex, endIndex);
+
+      // Render out processed selection list
+      container.innerHTML = paginatedItems.map(item => `
+        <div class="list-item-card" style="display: flex; gap: 12px; align-items: flex-start;">
+          ${item.image_url ? `<img src="${item.image_url}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; margin-top:2px;" />` : ''}
+          <div style="flex:1;">
+            <h4>${item.title}</h4>
+            <p style="margin-bottom:6px;">${item.description}</p>
+            <div class="meta-row">
+              <span style="font-weight:700; color:#1e293b;">₹${item.price}</span>
+              <span style="color:#16a34a; font-weight:700; font-size:13px;">💰 ${item.commission_percentage}% Commission</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Manage conditional pagination window display parameters
+      if (filteredMarketplaceItems.length > itemsPerPage) {
+        paginationWrapper.style.display = 'flex';
+        document.getElementById('pagination-indicator').textContent = `Page ${currentPage} of ${totalPages}`;
+        
+        // Toggle interaction safety triggers on edges
+        document.getElementById('btn-prev-page').disabled = (currentPage === 1);
+        document.getElementById('btn-next-page').disabled = (currentPage === totalPages);
+      } else {
+        paginationWrapper.style.display = 'none';
+      }
+    }
+
+    // ── Added Click Processing Function for Page Increments ──
+    function changeMarketplacePage(direction) {
+      const totalPages = Math.ceil(filteredMarketplaceItems.length / itemsPerPage);
+      const targetPage = currentPage + direction;
+
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        currentPage = targetPage;
+        renderMarketplaceDisplayPage();
+        
+        // Optional structural UX tweak: instantly snap container viewport baseline layer up cleanly 
+        document.getElementById('marketplace-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // ── Load Connected Blog Networks Module ──────────
+    async function loadBlogNetworks() {
+      try {
+        const res = await fetch('/api/blogs');
+        const blogs = await res.json();
+        const listContainer = document.getElementById('blog-network-list');
+        
+        if (!blogs.length) {
+          listContainer.innerHTML = '<p style="color:#94a3b8; font-size: 13px; text-align:center;">No networks connected.</p>';
+          return;
+        }
+        
+        listContainer.innerHTML = blogs.map(blog => `
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight: 600; font-size: 14px; color: #1e293b;">${blog.site_name}</div>
+              <a href="${blog.url_path}" target="_blank" style="font-size: 11px; color: #7c3aed; text-decoration: none; font-weight: 600;">View Live Blog Site ↗</a>
+            </div>
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background: ${blog.category === 'beauty' ? '#fce7f3' : '#dbeafe'}; color: ${blog.category === 'beauty' ? '#9d174d' : '#1e40af定'};">
+              ${blog.category}
+            </span>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('blog-network-list').innerHTML = 
+          '<p style="color:#94a3b8; font-size:13px; text-align:center;">Failed to load blog networks manager.</p>';
+      }
+    }
+
+    // ── Helpers & Cleaning Fields Utilities ──────────────────
+    function clearCampaignFields() {
+      ['title', 'description', 'product_url', 'required_hashtag', 'payout_per_post']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+
+    function clearMarketplaceFields() {
+      ['market-title', 'market-description', 'market-product-url', 'market-image-url', 'market-price', 'market-commission']
+        .forEach(id => document.getElementById(id).value = '');
+    }
+
+    function showFormMessage(targetId, text, type) {
+      const msg = document.getElementById(targetId);
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      setTimeout(() => { msg.className = 'message'; }, 4000);
+    }
+
+    // ── Init Execution ──────────────────────────────
+    loadCampaigns();
+    loadBlogNetworks();
+  </script>
+
+</body>
+</html>

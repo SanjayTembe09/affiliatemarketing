@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Secure Checkout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center font-sans p-4">
+
+  <div class="glass-card bg-slate-900 p-8 rounded-3xl border border-slate-800 text-center max-w-sm w-full shadow-2xl">
+    <div class="inline-flex items-center justify-center gap-2 mb-6 bg-slate-800 px-3 py-1 rounded-full text-[10px] font-bold text-sky-400 uppercase tracking-widest">
+      <span>🔒 SECURE E-COMMERCE CHECKOUT</span>
+    </div>
+    
+    <h2 id="product-title" class="text-xl font-black mb-2 text-white">Loading Product...</h2>
+    <p id="product-price" class="text-3xl font-black text-sky-400 mb-8">₹0.00</p>
+    
+    <p class="text-xs text-slate-400 mb-6 leading-relaxed">Simulate a real consumer checkout purchase sequence to trigger the tracking conversion loop.</p>
+    
+    <button id="buy-btn" onclick="completePurchase()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+      💳 Complete Purchase (Buy Now)
+    </button>
+    
+    <div id="status-msg" class="mt-4 text-xs font-bold transition-opacity duration-300 opacity-0"></div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const title = urlParams.get('title') || 'Selected Campaign';
+    const price = urlParams.get('price') || '500.00';
+    const campaignId = urlParams.get('campaignId') || 'unknown';
+
+    document.getElementById('product-title').textContent = title;
+    document.getElementById('product-price').textContent = `₹${price}`;
+
+    async function completePurchase() {
+      const btn = document.getElementById('buy-btn');
+      const statusDiv = document.getElementById('status-msg');
+      
+      btn.disabled = true;
+      btn.textContent = "Processing...";
+      statusDiv.style.opacity = "1";
+      statusDiv.style.color = "#38bdf8"; // sky-400
+      statusDiv.textContent = "Connecting to payment gateway...";
+
+      try {
+        const response = await fetch('/api/submissions/conversion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            campaignId: campaignId,
+            orderTotal: parseFloat(price)
+          })
+        });
+
+        // Store locally for the dashboard history
+        const purchaseEntry = {
+          title,
+          price: `₹${price}`,
+          date: new Date().toLocaleDateString('en-GB'),
+          status: 'approved'
+        };
+        
+        const existingLogs = JSON.parse(localStorage.getItem('proof_logs') || '[]');
+        existingLogs.unshift(purchaseEntry);
+        localStorage.setItem('proof_logs', JSON.stringify(existingLogs));
+        
+        // Update button text on success
+        btn.textContent = "Success!";
+        statusDiv.style.color = "#34d399"; // emerald-400
+        statusDiv.textContent = "🎉 Purchase successful! Commission credited.";
+        
+        setTimeout(() => {
+          window.location.href = `/index.html?purchase_success=true`;
+        }, 1500);
+
+      } catch (err) {
+        statusDiv.style.color = "#fb7185"; // rose-400
+        statusDiv.textContent = "Error: Could not verify conversion.";
+        btn.disabled = false;
+        btn.textContent = "💳 Complete Purchase (Buy Now)";
+      }
+    }
+  </script>
+</body>
+</html>

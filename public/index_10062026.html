@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Creator Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 { font-size: 22px; font-weight: 700; }
+    header p { font-size: 13px; opacity: 0.85; }
+
+    .nav {
+      background: white;
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .nav a {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #64748b;
+    }
+
+    .nav a.active {
+      color: #2563eb;
+      border-bottom: 3px solid #2563eb;
+    }
+
+    .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+
+    h2 { font-size: 18px; color: #1e293b; margin-bottom: 16px; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .card h3 { font-size: 17px; color: #1e293b; margin-bottom: 6px; }
+    .card p { font-size: 13px; color: #64748b; margin-bottom: 14px; }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .payout { color: #16a34a; font-weight: 700; font-size: 16px; }
+
+    .hashtag {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input[type="text"]:focus { border-color: #2563eb; }
+
+    button {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 8px;
+    }
+
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .btn-dark {
+      background: #0f172a;
+      margin-bottom: 10px;
+    }
+
+    .btn-dark:hover { background: #1e293b; }
+
+    .message {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .message.success { background: #dcfce7; color: #166534; display: block; }
+    .message.error { background: #fee2e2; color: #991b1b; display: block; }
+
+    .submissions { margin-top: 30px; }
+
+    .sub-item {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sub-item .title { font-size: 14px; font-weight: 600; color: #1e293b; }
+    .sub-item .date { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .badge.approved { background: #dcfce7; color: #166534; }
+    .badge.pending { background: #fef9c3; color: #854d0e; }
+    .badge.rejected { background: #fee2e2; color: #991b1b; }
+
+    .loading { text-align: center; color: #94a3b8; font-size: 14px; padding: 20px; }
+
+    .tweet-card {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+
+    .tweet-card:hover { border-color: #2563eb; background: #eff6ff; }
+    .tweet-card.selected { border-color: #2563eb; background: #eff6ff; }
+    .tweet-card p { font-size: 13px; color: #1e293b; margin-bottom: 4px; }
+    .tweet-card span { font-size: 11px; color: #94a3b8; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal h4 { font-size: 16px; color: #1e293b; margin-bottom: 12px; }
+    .modal p { font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 20px; }
+
+    .modal-footer { display: flex; gap: 10px; }
+    .modal-footer button { margin-bottom: 0; }
+    .btn-secondary { background: #e2e8f0; color: #475569; }
+    .btn-secondary:hover { background: #cbd5e1; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🔗 NanoConnect</h1>
+      <p>Creator Dashboard</p>
+    </div>
+    <div style="text-align:right">
+      <p style="font-weight:600">@RMWorkz</p>
+      <p style="font-size:12px; opacity:0.7">ID: 1</p>
+    </div>
+  </header>
+
+  <div class="nav">
+    <a href="/" class="active">👤 Creator View</a>
+    <a href="/brand.html">🏷️ Brand View</a>
+  </div>
+
+  <div class="container">
+
+    <h2>📢 Active Campaigns</h2>
+    <div id="campaigns">
+      <p class="loading">Loading campaigns...</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div class="submissions">
+      <h2>📋 My Submissions</h2>
+      <div id="submissions">
+        <p class="loading">Loading submissions...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="preview-modal" class="modal-overlay">
+    <div class="modal">
+      <h4>📄 Post Preview</h4>
+      <p id="preview-text"></p>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closePreview()">Cancel</button>
+        <button id="confirm-select-btn">✅ Select This Post</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CREATOR_ID = 1;
+    const TWITTER_HANDLE = 'RMWorkz';
+
+    // ── Live Stream Ad-Click Notifications (SSE Connection) ───────────
+    function initializeNotificationStream() {
+      const eventSource = new EventSource('/api/notifications/stream');
+
+      eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'AD_CLICK') {
+          showLiveNotificationToast(data.title, data.message);
+        }
+      };
+
+      eventSource.onerror = function() {
+        console.log("Real-time stream disconnected. Reconnecting automatically...");
+      };
+    }
+
+    // ── NEW: Check URL for Ad Redirects ──────────────────────────────
+    function checkForLandingNotification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.get('clicked') === 'true') {
+        const title = urlParams.get('campaignTitle') || 'Your Active Ad';
+        
+        // Render the notification toast instantly upon loading the dashboard
+        showLiveNotificationToast(
+          '🔥 New Ad Click!', 
+          `Someone just clicked your link for "${title}" on the travel blog!`
+        );
+
+        // Clean up the URL query parameters so refreshing doesn't replay the toast
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    // Toast UI Generator Engine
+    function showLiveNotificationToast(title, message) {
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position:fixed; bottom:20px; right:20px; z-index:9999; max-width:340px; width:calc(100% - 40px);';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        background: #0f172a;
+        color: white;
+        padding: 16px;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        margin-top: 12px;
+        transform: translateY(30px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        border-left: 4px solid #38bdf8;
+      `;
+
+      toast.innerHTML = `
+        <div style="font-weight:700; font-size:14px; color:#38bdf8; margin-bottom:4px;">${title}</div>
+        <div style="font-size:12px; color:#cbd5e1; line-height:1.4;">${message}</div>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+      }, 50);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateY(-20px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+      }, 5000);
+    }
+
+    // ── Load Campaigns ──────────────────────────────
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns');
+        const campaigns = await res.json();
+        const container = document.getElementById('campaigns');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No active campaigns yet.</p>';
+          return;
+        }
+
+        const unique = campaigns.filter((c, i, arr) => arr.findIndex(x => x.id === c.id) === i);
+
+        container.innerHTML = unique.map(camp => `
+          <div class="card">
+            <h3>${camp.title}</h3>
+            <p>${camp.description}</p>
+            <div class="meta">
+              <span class="payout">₹${camp.payout_per_post} per post</span>
+              <span class="hashtag">${camp.required_hashtag}</span>
+            </div>
+
+            <button class="btn-dark" onclick="fetchMyPosts(${camp.id})" id="fetch-btn-${camp.id}">
+              🐦 Fetch My X Posts
+            </button>
+
+            <div id="tweet-list-${camp.id}" style="display:none; margin-bottom:10px;">
+              <p style="font-size:13px; color:#64748b; margin-bottom:8px;">Select a post to submit:</p>
+              <div id="tweets-${camp.id}"></div>
+            </div>
+
+            <input type="text" id="url-${camp.id}" placeholder="Paste your X post URL or pick from above..." />
+            <button onclick="submitPost(${camp.id})" id="btn-${camp.id}">Submit Proof</button>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        document.getElementById('campaigns').innerHTML =
+          '<p class="loading">Failed to load campaigns. Is your server running?</p>';
+      }
+    }
+
+    // ── Fetch My X Posts ────────────────────────────
+    async function fetchMyPosts(campaignId) {
+      const fetchBtn = document.getElementById(`fetch-btn-${campaignId}`);
+      const tweetList = document.getElementById(`tweet-list-${campaignId}`);
+      const tweetsContainer = document.getElementById(`tweets-${campaignId}`);
+
+      fetchBtn.disabled = true;
+      fetchBtn.textContent = 'Fetching...';
+
+      try {
+        const res = await fetch(`/api/submissions/tweets/${TWITTER_HANDLE}`);
+        const tweets = await res.json();
+
+        if (!Array.isArray(tweets) || !tweets.length) {
+          tweetsContainer.innerHTML = '<p style="color:red;font-size:13px">No tweets found.</p>';
+          tweetList.style.display = 'block';
+          fetchBtn.disabled = false;
+          fetchBtn.textContent = '🐦 Fetch My X Posts';
+          return;
+        }
+
+        tweetsContainer.innerHTML = tweets.map(tweet => `
+          <div class="tweet-card" onclick="openPreview(${campaignId}, '${tweet.url}', \`${tweet.text.replace(/`/g, "'")}\`, this)">
+            <p>${tweet.text.substring(0, 100)}${tweet.text.length > 100 ? '...' : ''}</p>
+            <span>${new Date(tweet.created_at).toLocaleDateString()} &nbsp;•&nbsp; Tap to preview</span>
+          </div>
+        `).join('');
+
+        tweetList.style.display = 'block';
+
+      } catch (err) {
+        tweetsContainer.innerHTML = '<p style="color:red;font-size:13px">Failed to fetch posts.</p>';
+        tweetList.style.display = 'block';
+      }
+
+      fetchBtn.disabled = false;
+      fetchBtn.textContent = '🐦 Fetch My X Posts';
+    }
+
+    // ── Tweet Preview Modal ─────────────────────────
+    let selectedCampaignId = null;
+    let selectedUrl = null;
+    let selectedElement = null;
+
+    function openPreview(campaignId, url, text, element) {
+      selectedCampaignId = campaignId;
+      selectedUrl = url;
+      selectedElement = element;
+
+      document.getElementById('preview-text').textContent = text;
+      document.getElementById('preview-modal').style.display = 'flex';
+
+      document.getElementById('confirm-select-btn').onclick = () => {
+        document.querySelectorAll(`#tweets-${campaignId} .tweet-card`).forEach(el => {
+          el.classList.remove('selected');
+        });
+        element.classList.add('selected');
+
+        const input = document.getElementById(`url-${campaignId}`);
+        input.value = url;
+        input.style.borderColor = '#2563eb';
+        input.style.backgroundColor = '#eff6ff';
+        setTimeout(() => { input.style.backgroundColor = 'white'; }, 1500);
+
+        closePreview();
+      };
+    }
+
+    function closePreview() {
+      document.getElementById('preview-modal').style.display = 'none';
+    }
+
+    // ── Submit Post ─────────────────────────────────
+    async function submitPost(campaignId) {
+      const urlInput = document.getElementById(`url-${campaignId}`);
+      const btn = document.getElementById(`btn-${campaignId}`);
+      const postUrl = urlInput.value.trim();
+
+      if (!postUrl) {
+        showMessage('Please paste or select your X post URL first!', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+      document.getElementById('message').className = 'message';
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            creator_id: CREATOR_ID,
+            campaign_id: campaignId,
+            post_url: postUrl
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showMessage(`✅ Post Verified! Your payout: ₹${data.payout_amount}`, 'success');
+          urlInput.value = '';
+          loadSubmissions();
+        } else {
+          showMessage(`❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showMessage('❌ Could not reach server. Is it running?', 'error');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Submit Proof';
+    }
+
+    // ── Load Submissions ────────────────────────────
+    async function loadSubmissions() {
+      try {
+        const res = await fetch(`/api/submissions/${CREATOR_ID}`);
+        const subs = await res.json();
+        const container = document.getElementById('submissions');
+
+        if (!subs.length) {
+          container.innerHTML = '<p class="loading">No submissions yet.</p>';
+          return;
+        }
+
+        container.innerHTML = subs.map(sub => `
+          <div class="sub-item">
+            <div>
+              <div class="title">${sub.campaign_title}</div>
+              <div class="date">₹${sub.payout_amount} • ${new Date(sub.submitted_at).toLocaleDateString()}</div>
+            </div>
+            <span class="badge ${sub.status}">${sub.status}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('submissions').innerHTML =
+          '<p class="loading">Failed to load submissions.</p>';
+      }
+    }
+
+    function showMessage(text, type) {
+      const msgBox = document.getElementById('message');
+      msgBox.textContent = text;
+      msgBox.className = `message ${type}`;
+    }
+
+    // ── Initialization Framework Execution ───────────
+    loadCampaigns();
+    loadSubmissions();
+    initializeNotificationStream(); 
+    checkForLandingNotification();   // <-- Check for URL parameters on load
+  </script>
+
+</body>
+</html>

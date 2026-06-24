@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Premium Creator Hub</title>
+  <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(125% 125% at 50% 10%, #020617 40%, #0f172a 100%);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+    .text-glow {
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+    .glow-cyan:focus {
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-height-screen font-sans selection:bg-sky-500/30 selection:text-sky-200">
+
+  <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl md:text-2xl font-black tracking-tight bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-2">
+        <span>🔗</span> NanoConnect
+      </h1>
+      <p class="text-[10px] text-sky-400 font-extrabold tracking-widest uppercase">Premium Creator Suite</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right hidden sm:block">
+        <p class="font-bold text-sm text-sky-400 text-glow" id="header-handle">@Loading...</p>
+        <p class="text-[10px] text-slate-500 font-mono" id="header-id">ID: --</p>
+      </div>
+      <button class="bg-slate-900 hover:bg-red-950/40 text-slate-300 hover:text-red-400 border border-slate-800 hover:border-red-900/60 transition-all duration-300 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer" onclick="handleLogout()">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <div class="max-w-2xl mx-auto px-4 mt-8">
+    <div class="bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80 flex shadow-inner">
+      <a href="/" class="flex-1 text-center py-2.5 text-xs font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 rounded-lg shadow-sm transition-all duration-300">
+        👤 Creator Portal
+      </a>
+      <a href="/brand.html" class="flex-1 text-center py-2.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition-all duration-300">
+        🏷️ Brand Hub
+      </a>
+    </div>
+  </div>
+
+  <main class="max-w-xl mx-auto px-4 py-8">
+    
+    <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-950/40 rounded-xl border border-slate-900 mb-8">
+      <button id="tab-campaigns" onclick="switchTab('campaigns')" class="py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-slate-800">
+        🎯 Direct Campaigns
+      </button>
+      <button id="tab-marketplace" onclick="switchTab('marketplace')" class="py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200">
+        🛒 Affiliate Marketplace
+      </button>
+    </div>
+
+    <div id="section-campaigns" class="space-y-6">
+      <div class="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
+        <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+        Active Ad Campaigns
+      </div>
+      <div id="campaigns" class="space-y-4">
+        <p class="loading">Sourcing matching creator gigs...</p>
+      </div>
+
+      <div class="submissions pt-6 border-t border-slate-900/80">
+        <div class="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">
+          <span>📋</span> Verification Proof Logs
+        </div>
+        <div id="submissions" class="space-y-3">
+          <p class="loading">Compiling verification records...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-marketplace" class="space-y-6" style="display: none;">
+      <div class="flex justify-between items-center mb-2">
+        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">
+          🛒 Product Inventory
+        </div>
+      </div>
+
+      <div class="search-wrapper relative">
+        <input type="text" id="marketplace-search" placeholder="Search marketplace products..." oninput="handleCreatorMarketplaceSearch()" class="w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500/20 outline-none transition-all duration-300 text-slate-100 placeholder:text-slate-500 glow-cyan" />
+      </div>
+
+      <div id="marketplace-list" class="space-y-4">
+        <p class="loading">Loading products...</p>
+      </div>
+
+      <div id="pagination-wrapper" class="pagination-controls flex justify-between items-center p-3 bg-slate-950/40 border border-slate-900 rounded-xl" style="display: none;">
+        <button id="btn-prev-page" onclick="changeCreatorMarketplacePage(-1)" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all">Previous</button>
+        <span id="pagination-indicator" class="text-xs font-semibold text-slate-400">Page 1 of 1</span>
+        <button id="btn-next-page" onclick="changeCreatorMarketplacePage(1)" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all">Next</button>
+      </div>
+    </div>
+
+    <div id="message" class="message fixed bottom-6 left-1/2 -translate-x-1/2 z-50 shadow-xl max-w-sm w-full mx-4"></div>
+
+  </main>
+  
+  <script>
+    const token = localStorage.getItem('token');
+    const userSession = JSON.parse(localStorage.getItem('user'));
+
+    if (!token || !userSession) {
+      window.location.href = '/auth.html';
+    }
+
+    const CREATOR_ID = userSession.id || 1;
+    const TWITTER_HANDLE = userSession.twitter_handle || userSession.username || `creator_${CREATOR_ID}`;
+
+    document.getElementById('header-handle').textContent = `@${TWITTER_HANDLE}`;
+    document.getElementById('header-id').textContent = `ID: ${CREATOR_ID}`;
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/auth.html';
+    }
+
+    let creatorMarketplaceItems = [];      
+    let filteredCreatorItems = [];         
+    let creatorCurrentPage = 1;            
+    const creatorItemsPerPage = 5;         
+
+    function switchTab(target) {
+      const campBtn = document.getElementById('tab-campaigns');
+      const marketBtn = document.getElementById('tab-marketplace');
+      const campSection = document.getElementById('section-campaigns');
+      const marketSection = document.getElementById('section-marketplace');
+
+      if (target === 'campaigns') {
+        campSection.style.display = 'block';
+        marketSection.style.display = 'none';
+        campBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-slate-800";
+        marketBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+      } else {
+        campSection.style.display = 'none';
+        marketSection.style.display = 'block';
+        campBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+        marketBtn.className = "py-2.5 text-xs font-bold rounded-lg transition-all duration-300 bg-slate-900 text-slate-100 border border-slate-800";
+        loadMarketplaceProducts();
+      }
+    }
+
+    function initializeNotificationStream() {
+      const eventSource = new EventSource('/api/notifications/stream');
+
+      eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'AD_CLICK') {
+          showLiveNotificationToast(data.title, data.message);
+        }
+      };
+
+      eventSource.onerror = function() {
+        console.log("Real-time stream disconnected. Reconnecting automatically...");
+      };
+    }
+
+    function checkForLandingNotification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('clicked') === 'true') {
+        const title = urlParams.get('campaignTitle') || 'Your Active Ad';
+        showLiveNotificationToast(
+          '🔥 New Ad Click!', 
+          `Someone just clicked your link for "${title}" on the travel blog!`
+        );
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    function showLiveNotificationToast(title, message) {
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position:fixed; bottom:20px; right:20px; z-index:9999; max-width:340px; width:calc(100% - 40px);';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      toast.className = 'glass-card text-slate-100 p-4 rounded-xl shadow-2xl mt-3 border-l-4 border-sky-400 transition-all duration-500 opacity-0 translate-y-8 animate-slide-up';
+      toast.style.background = 'rgba(10, 15, 30, 0.95)';
+
+      toast.innerHTML = `
+        <div class="font-extrabold text-xs text-sky-400 mb-1 tracking-wider text-glow">${title}</div>
+        <div class="text-xs text-slate-300 leading-relaxed">${message}</div>
+      `;
+
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.remove('opacity-0', 'translate-y-8');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-20px]');
+        setTimeout(() => toast.remove(), 500);
+      }, 5000);
+    }
+
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const campaigns = await res.json();
+        const container = document.getElementById('campaigns');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No active campaigns available.</p>';
+          return;
+        }
+
+        const unique = campaigns.filter((c, i, arr) => arr.findIndex(x => x.id === c.id) === i);
+
+        container.innerHTML = unique.map(camp => `
+          <div class="glass-card rounded-2xl p-5 shadow-lg relative overflow-hidden transition-all duration-300 group">
+            <div class="absolute -right-16 -top-16 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl group-hover:bg-sky-500/10 transition-all"></div>
+            <h3 class="text-base font-bold text-slate-200 tracking-tight group-hover:text-sky-400 transition-all mb-1">${camp.title}</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">${camp.description}</p>
+            <div class="flex justify-between items-center border-t border-slate-800/60 pt-3 mb-4">
+              <span class="text-emerald-400 font-extrabold text-base">₹${camp.payout_per_post}</span>
+              <span class="bg-sky-500/10 text-sky-400 text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-sky-500/20">${camp.required_hashtag}</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="url-${camp.id}" placeholder="Paste your X post URL here..." class="flex-1 bg-slate-950/60 border border-slate-800 rounded-lg px-3 py-2 text-xs focus:border-sky-500 outline-none transition-all" />
+              <button onclick="submitPost(${camp.id})" id="btn-${camp.id}" class="bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-lg hover:shadow-sky-500/20 transition-all w-auto whitespace-nowrap">Verify</button>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        document.getElementById('campaigns').innerHTML = '<p class="loading text-red-400">Failed to load campaigns.</p>';
+      }
+    }
+
+    async function loadMarketplaceProducts() {
+      const container = document.getElementById('marketplace-list');
+      container.innerHTML = '<p class="loading">Retrieving catalog layers...</p>';
+      document.getElementById('pagination-wrapper').style.display = 'none';
+      
+      try {
+        const res = await fetch('/api/marketplace', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        creatorMarketplaceItems = await res.json();
+        filteredCreatorItems = [...creatorMarketplaceItems];
+        creatorCurrentPage = 1;
+        document.getElementById('marketplace-search').value = '';
+        renderCreatorMarketplacePage();
+      } catch (err) {
+        container.innerHTML = '<p class="loading text-red-400">Failed to load marketplace products.</p>';
+      }
+    }
+
+    function handleCreatorMarketplaceSearch() {
+      const query = document.getElementById('marketplace-search').value.toLowerCase().trim();
+      filteredCreatorItems = creatorMarketplaceItems.filter(product => {
+        const titleMatch = product.title ? product.title.toLowerCase().includes(query) : false;
+        const descMatch = product.description ? product.description.toLowerCase().includes(query) : false;
+        return titleMatch || descMatch;
+      });
+      creatorCurrentPage = 1;
+      renderCreatorMarketplacePage();
+    }
+
+    function renderCreatorMarketplacePage() {
+      const container = document.getElementById('marketplace-list');
+      const paginationWrapper = document.getElementById('pagination-wrapper');
+
+      if (!filteredCreatorItems.length) {
+        container.innerHTML = '<p class="loading">No products listed matching your criteria.</p>';
+        paginationWrapper.style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredCreatorItems.length / creatorItemsPerPage);
+      const startIndex = (creatorCurrentPage - 1) * creatorItemsPerPage;
+      const endIndex = startIndex + creatorItemsPerPage;
+      const paginatedItems = filteredCreatorItems.slice(startIndex, endIndex);
+
+      container.innerHTML = paginatedItems.map(product => {
+        const uniqueAffiliateUrl = `${window.location.origin}/r/${product.id}/${CREATOR_ID}`;
+        const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          `Check out this amazing ${product.title}! Get yours here: ${uniqueAffiliateUrl} #nanotest`
+        )}`;
+
+        return `
+          <div class="glass-card rounded-2xl p-5 shadow-lg flex flex-col gap-4 relative overflow-hidden transition-all duration-300">
+            <div class="flex gap-4 items-start">
+              ${product.image_url ? `<img src="${product.image_url}" class="w-16 h-16 object-cover rounded-xl border border-slate-800 shadow-inner" onerror="this.style.display='none'" />` : ''}
+              <div class="flex-1">
+                <h4 class="text-sm font-bold text-slate-200 tracking-tight mb-1">${product.title}</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-2">${product.description}</p>
+                <div class="font-extrabold text-slate-100 text-sm">₹${product.price}</div>
+              </div>
+            </div>
+            
+            <div class="bg-emerald-500/5 border border-emerald-500/15 p-3 rounded-xl flex justify-between items-center text-xs">
+              <span class="text-emerald-400 font-bold">💰 Get ${product.commission_percentage}% per successful sale</span>
+              <span class="bg-slate-900 text-slate-400 text-[10px] font-extrabold px-2 py-0.5 rounded border border-slate-800">#nanotest</span>
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="navigator.clipboard.writeText('${uniqueAffiliateUrl}'); showMessage('📋 Copied custom link!', 'success')" class="bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-xs px-4 py-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-all flex-1 shadow-sm">
+                📋 Copy Affiliate Link
+              </button>
+              <a href="${tweetIntent}" target="_blank" class="bg-slate-100 hover:bg-white text-slate-950 font-bold text-xs px-4 py-2.5 rounded-lg transition-all flex-1 text-center shadow-lg hover:shadow-white/5 flex items-center justify-center gap-1.5">
+                🐦 Share on X
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (filteredCreatorItems.length > creatorItemsPerPage) {
+        paginationWrapper.style.display = 'flex';
+        document.getElementById('pagination-indicator').textContent = `Page ${creatorCurrentPage} of ${totalPages}`;
+        document.getElementById('btn-prev-page').disabled = (creatorCurrentPage === 1);
+        document.getElementById('btn-next-page').disabled = (creatorCurrentPage === totalPages);
+      } else {
+        paginationWrapper.style.display = 'none';
+      }
+    }
+
+    function changeCreatorMarketplacePage(direction) {
+      const totalPages = Math.ceil(filteredCreatorItems.length / creatorItemsPerPage);
+      const targetPage = creatorCurrentPage + direction;
+
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        creatorCurrentPage = targetPage;
+        renderCreatorMarketplacePage();
+        document.getElementById('marketplace-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    async function submitPost(campaignId) {
+      const urlInput = document.getElementById(`url-${campaignId}`);
+      const btn = document.getElementById(`btn-${campaignId}`);
+      const postUrl = urlInput.value.trim();
+
+      if (!postUrl) {
+        showMessage('Please paste your X post URL first!', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+      document.getElementById('message').className = 'message';
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            creator_id: CREATOR_ID,
+            campaign_id: campaignId,
+            post_url: postUrl
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showMessage(`✅ Post verified! Payout allocated: ₹${data.payout_amount}`, 'success');
+          urlInput.value = '';
+          loadSubmissions();
+        } else {
+          showMessage(`❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showMessage('❌ Could not connect to the API server.', 'error');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Verify';
+    }
+
+    async function loadSubmissions() {
+      try {
+        const res = await fetch(`/api/submissions/${CREATOR_ID}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const subs = await res.json();
+        const container = document.getElementById('submissions');
+
+        if (!subs.length) {
+          container.innerHTML = '<p class="loading">No submissions recorded.</p>';
+          return;
+        }
+
+        container.innerHTML = subs.map(sub => `
+          <div class="glass-card rounded-xl p-4 flex justify-between items-center transition-all duration-300">
+            <div>
+              <div class="text-sm font-bold text-slate-200">${sub.campaign_title}</div>
+              <div class="text-[11px] text-slate-500 font-semibold mt-0.5">₹${sub.payout_amount} • ${new Date(sub.submitted_at).toLocaleDateString()}</div>
+            </div>
+            <span class="badge px-3 py-1 text-[10px] font-extrabold rounded-full ${sub.status === 'approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : sub.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">${sub.status}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('submissions').innerHTML = '<p class="loading text-red-400">Failed to sync submission logs.</p>';
+      }
+    }
+
+    function showMessage(text, type) {
+      const msgBox = document.getElementById('message');
+      msgBox.textContent = text;
+      msgBox.className = `message fixed bottom-6 left-1/2 -translate-x-1/2 z-50 p-4 rounded-xl text-center text-xs font-bold shadow-2xl transition-all duration-300 max-w-sm w-full mx-4 border ${type === 'success' ? 'bg-emerald-950/90 text-emerald-400 border-emerald-800' : 'bg-rose-950/90 text-rose-400 border-rose-800'}`;
+      msgBox.style.display = 'block';
+      setTimeout(() => {
+        msgBox.style.display = 'none';
+      }, 5000);
+    }
+
+    // ── Execute System Framework ──
+    loadCampaigns();
+    loadSubmissions();
+    initializeNotificationStream(); 
+    checkForLandingNotification();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Authenticate</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    header h1 { font-size: 28px; font-weight: 700; color: #2563eb; margin-bottom: 4px;}
+    header p { font-size: 14px; color: #64748b; }
+
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .nav-tabs button {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-tabs button.active {
+      background: white;
+      color: #2563eb;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+      background: #fff;
+    }
+
+    input:focus, select:focus { border-color: #2563eb; }
+
+    button.btn-primary {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    button.btn-primary:hover { background: #1d4ed8; }
+    button.btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+    .message.success { background: #dcfce7; color: #166534; display: block; }
+    .message.error { background: #fee2e2; color: #991b1b; display: block; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🔗 NanoConnect</h1>
+    <p>Creator & Brand Authentication Gateway</p>
+  </header>
+
+  <div class="auth-container">
+    <div class="nav-tabs">
+      <button id="tab-login" class="active" onclick="switchTab('login')">Sign In</button>
+      <button id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <div class="card">
+      <div id="message" class="message"></div>
+
+      <form id="auth-form" onsubmit="handleSubmit(event)">
+        
+        <div class="form-group reg-only" style="display: none;">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="John Doe" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="creator@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <div class="form-group reg-only" style="display: none;">
+          <label for="role">Account Role</label>
+          <select id="role">
+            <option value="creator" selected>Creator (Default)</option>
+            <option value="brand">Brand / Advertiser</option>
+          </select>
+        </div>
+
+        <div class="form-group reg-only" style="display: none;">
+          <label for="twitter_handle">X (Twitter) Handle</label>
+          <input type="text" id="twitter_handle" placeholder="RMWorkz" />
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn-primary">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'login';
+
+    function switchTab(mode) {
+      currentMode = mode;
+      const regFields = document.querySelectorAll('.reg-only');
+      const submitBtn = document.getElementById('submit-btn');
+      const msgBox = document.getElementById('message');
+      
+      msgBox.className = 'message'; // hide message on tab switch
+
+      // Reset active states on buttons
+      document.getElementById('tab-login').classList.remove('active');
+      document.getElementById('tab-register').classList.remove('active');
+      document.getElementById(`tab-${mode}`).classList.add('active');
+
+      if (mode === 'register') {
+        regFields.forEach(el => el.style.display = 'block');
+        document.getElementById('name').required = true;
+        document.getElementById('twitter_handle').required = true;
+        submitBtn.textContent = 'Create Account';
+      } else {
+        regFields.forEach(el => el.style.display = 'none');
+        document.getElementById('name').required = false;
+        document.getElementById('twitter_handle').required = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const msgBox = document.getElementById('message');
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const name = document.getElementById('name').value.trim();
+      const role = document.getElementById('role').value;
+      const twitter_handle = document.getElementById('twitter_handle').value.trim();
+
+      submitBtn.disabled = true;
+      msgBox.className = 'message';
+
+      const endpoint = currentMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      
+      const payload = currentMode === 'login' 
+        ? { email, password } 
+        : { name, email, password, role, twitter_handle };
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          if (currentMode === 'login') {
+            msgBox.textContent = 'Success! Redirecting to dashboard...';
+            msgBox.className = 'message success';
+            
+            // Save Token and user context to local storage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Redirect context to creator dashboard
+            setTimeout(() => { window.location.href = '/index.html'; }, 1200);
+          } else {
+            msgBox.textContent = 'Registration successful! Switching to sign-in...';
+            msgBox.className = 'message success';
+            document.getElementById('auth-form').reset();
+            setTimeout(() => { switchTab('login'); }, 2000);
+          }
+        } else {
+          msgBox.textContent = `Error: ${data.error || 'Authentication failed'}`;
+          msgBox.className = 'message error';
+        }
+      } catch (err) {
+        msgBox.textContent = 'Cannot reach server. Ensure database and app are running.';
+        msgBox.className = 'message error';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

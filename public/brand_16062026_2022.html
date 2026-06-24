@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Brand Console</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+  <style>
+    body { background: radial-gradient(125% 125% at 50% 10%, #020617 40%, #0f172a 100%); }
+    .glass-card { background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); }
+    .glass-card:hover { border-color: rgba(168, 85, 247, 0.2); }
+    .glow-purple:focus { box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen font-sans selection:bg-purple-500/30 selection:text-purple-200">
+
+  <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-black tracking-tight bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
+        <span>🏷️</span> Brand Console
+      </h1>
+      <p class="text-[10px] text-purple-400 font-extrabold tracking-widest uppercase">Advertiser Dashboard</p>
+    </div>
+    <a href="/index.html" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-all duration-300 px-4 py-2 text-xs font-bold rounded-lg cursor-pointer">
+      Return to Creator Portal
+    </a>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- Campaign Management -->
+    <section>
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Create Campaign</h2>
+      <div class="glass-card p-6 rounded-2xl space-y-4">
+        <input type="text" id="title" placeholder="Campaign Title" class="w-full bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-sm glow-purple outline-none" />
+        <textarea id="description" placeholder="Campaign Brief" class="w-full bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-sm glow-purple outline-none h-24"></textarea>
+        <button onclick="createCampaign()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-widest transition-all">Launch Campaign</button>
+      </div>
+      <div id="campaign-list" class="mt-6 space-y-4"></div>
+    </section>
+
+    <!-- Marketplace Management -->
+    <section>
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Marketplace Inventory</h2>
+      <div class="glass-card p-6 rounded-2xl space-y-4">
+        <input type="text" id="market-title" placeholder="Product Title" class="w-full bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-sm glow-purple outline-none" />
+        <input type="number" id="market-price" placeholder="Price (₹)" class="w-full bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-sm glow-purple outline-none" />
+        <button onclick="addProduct()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-widest transition-all">List Product</button>
+      </div>
+      <div id="marketplace-display" class="mt-6 space-y-4"></div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentPage = 1;
+    const totalPages = 1;
+
+    async function createCampaign() {
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      if (!title) return;
+      
+      // Simulation of API call
+      console.log("Campaign created:", { title, description });
+      loadCampaigns();
+    }
+
+    async function loadCampaigns() {
+      const container = document.getElementById('campaign-list');
+      container.innerHTML = `
+        <div class="glass-card p-4 rounded-xl">
+          <h4 class="text-sm font-bold">Launch Summer Event</h4>
+          <p class="text-xs text-slate-400">Promote new collection with #summer2026</p>
+        </div>
+      `;
+    }
+
+    async function addProduct() {
+      console.log("Product added to inventory.");
+      renderMarketplaceDisplayPage();
+    }
+
+    function renderMarketplaceDisplayPage() {
+      const display = document.getElementById('marketplace-display');
+      display.innerHTML = `
+        <div class="glass-card rounded-xl p-4 flex gap-4 items-center">
+          <div class="flex-1">
+            <h4 class="text-sm font-bold text-slate-200">Premium Serum</h4>
+            <p class="text-emerald-400 font-extrabold text-xs">₹999</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize
+    loadCampaigns();
+    renderMarketplaceDisplayPage();
+  </script>
+</body>
+</html>

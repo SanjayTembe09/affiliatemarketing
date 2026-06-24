@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Premium Creator Dashboard</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      --panel-bg: rgba(255, 255, 255, 0.85);
+      --panel-border: rgba(226, 232, 240, 0.8);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.15);
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --success-text: #065f46;
+      --pending: #f59e0b;
+      --pending-bg: #fffbeb;
+      --pending-text: #92400e;
+      --rejected: #ef4444;
+      --rejected-bg: #fef2f2;
+      --rejected-text: #991b1b;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 16px -6px rgba(15, 23, 42, 0.04);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 { 
+      font-size: 20px; 
+      font-weight: 800; 
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    header p { 
+      font-size: 11px; 
+      opacity: 0.6; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      margin-top: 2px;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      width: auto;
+      margin-top: 6px;
+      margin-bottom: 0;
+      transition: var(--transition);
+    }
+    .btn-logout:hover { 
+      background: rgba(239, 68, 68, 0.2); 
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .nav {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      max-width: 520px;
+      margin: 20px auto 0 auto;
+      border-radius: var(--radius-md);
+      padding: 6px;
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav a {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: calc(var(--radius-md) - 4px);
+      transition: var(--transition);
+    }
+
+    .nav a.active {
+      color: var(--primary);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(15, 23, 42, 0.05);
+      padding: 4px;
+      border-radius: var(--radius-md);
+    }
+
+    .view-toggle button {
+      flex: 1;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: calc(var(--radius-md) - 2px);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .container { 
+      max-width: 520px; 
+      margin: 0 auto; 
+      padding: 24px 16px; 
+    }
+
+    h2 { 
+      font-size: 13px; 
+      font-weight: 800; 
+      color: var(--text-muted); 
+      margin-bottom: 16px; 
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.12);
+    }
+
+    .card h3 { 
+      font-size: 18px; 
+      font-weight: 700; 
+      color: var(--text-main); 
+      margin-bottom: 8px; 
+      letter-spacing: -0.4px;
+    }
+    
+    .card p { 
+      font-size: 13px; 
+      color: var(--text-muted); 
+      line-height: 1.5; 
+      margin-bottom: 18px; 
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 14px;
+    }
+
+    .payout { 
+      color: var(--success); 
+      font-weight: 800; 
+      font-size: 17px; 
+      letter-spacing: -0.3px;
+    }
+
+    .hashtag {
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      outline: none;
+      background: rgba(255,255,255,0.8);
+      transition: var(--transition);
+      color: var(--text-main);
+    }
+    input[type="text"]::placeholder { color: #94a3b8; }
+    input[type="text"]:focus { 
+      border-color: var(--primary); 
+      background: white;
+      box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+
+    button {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    button:hover { 
+      background: var(--primary-hover); 
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+    button:active { transform: translateY(0); }
+    button:disabled { 
+      background: #cbd5e1; 
+      color: #94a3b8; 
+      cursor: not-allowed; 
+      box-shadow: none;
+      transform: none;
+    }
+
+    .message {
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      display: none;
+      animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .message.success { background: var(--success-bg); color: var(--success-text); display: block; border-left: 4px solid var(--success); }
+    .message.error { background: var(--rejected-bg); color: var(--rejected-text); display: block; border-left: 4px solid var(--rejected); }
+
+    .submissions { margin-top: 36px; }
+
+    .sub-item {
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+    .sub-item:hover { transform: scale(1.01); }
+
+    .sub-item .title { font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .sub-item .date { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge.approved { background: var(--success-bg); color: var(--success-text); }
+    .badge.pending { background: var(--pending-bg); color: var(--pending-text); }
+    .badge.rejected { background: var(--rejected-bg); color: var(--rejected-text); }
+
+    .loading { text-align: center; color: var(--text-muted); font-size: 13px; padding: 30px; font-weight: 600; }
+
+    .search-wrapper {
+      margin-bottom: 20px;
+    }
+    .search-wrapper input[type="text"] {
+      margin-bottom: 0;
+      padding-left: 42px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 14px center;
+      background-size: 18px;
+    }
+
+    .pagination-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--panel-border);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pagination-controls button {
+      width: auto;
+      padding: 8px 16px;
+      margin-bottom: 0;
+      font-size: 12px;
+      background: white;
+      color: var(--text-main);
+      border: 1px solid #e2e8f0;
+      box-shadow: var(--shadow-sm);
+    }
+    .pagination-controls button:hover {
+      background: #f8fafc;
+      color: var(--primary);
+      border-color: #cbd5e1;
+    }
+
+    .pagination-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    @keyframes slideInUp {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🔗 NanoConnect</h1>
+      <p>Creator Hub Dashboard</p>
+    </div>
+    <div style="text-align:right">
+      <p style="font-weight:700; color: #38bdf8; font-size:14px;" id="header-handle">@Loading...</p>
+      <p style="font-size:11px; opacity:0.5; font-family: monospace;" id="header-id">ID: --</p>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="nav">
+    <a href="/" class="active">👤 Creator Feed</a>
+    <a href="/brand.html">🏷️ Brand Console</a>
+  </div>
+
+  <div class="container">
+
+    <div class="view-toggle">
+      <button id="tab-campaigns" onclick="switchTab('campaigns')" style="background: white; color: var(--text-main); box-shadow: var(--shadow-sm);">🎯 Direct Campaigns</button>
+      <button id="tab-marketplace" onclick="switchTab('marketplace')" style="background: transparent; color: var(--text-muted);">🛒 Affiliate Marketplace</button>
+    </div>
+
+    <!-- Campaigns Window Context Section -->
+    <div id="section-campaigns">
+      <h2>🎯 Active Ad Campaigns</h2>
+      <div id="campaigns">
+        <p class="loading">Loading campaigns into view...</p>
+      </div>
+
+      <div class="submissions">
+        <h2>📋 Verification Proof Logs</h2>
+        <div id="submissions">
+          <p class="loading">Loading past submissions...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketplace Window Context Section -->
+    <div id="section-marketplace" style="display: none;">
+      <h2>🛒 Product Marketplace</h2>
+      
+      <div class="search-wrapper">
+        <input type="text" id="marketplace-search" placeholder="Search marketplace products..." oninput="handleCreatorMarketplaceSearch()" />
+      </div>
+
+      <div id="marketplace-list" style="display: grid; grid-template-columns: 1fr; gap: 16px;">
+        <p class="loading">Loading product inventory list...</p>
+      </div>
+
+      <div id="pagination-wrapper" class="pagination-controls" style="display: none;">
+        <button id="btn-prev-page" onclick="changeCreatorMarketplacePage(-1)">Previous</button>
+        <span id="pagination-indicator" class="pagination-status">Page 1 of 1</span>
+        <button id="btn-next-page" onclick="changeCreatorMarketplacePage(1)">Next</button>
+      </div>
+    </div>
+
+    <div id="message" class="message"></div>
+
+  </div>
+  
+  <script>
+    const token = localStorage.getItem('token');
+    const userSession = JSON.parse(localStorage.getItem('user'));
+
+    if (!token || !userSession) {
+      window.location.href = '/auth.html';
+    }
+
+    const CREATOR_ID = userSession.id || 1;
+    
+    // ── BIAS-PROOF FALLBACK CHAIN FOR THE TWITTER HANDLE DISPLAY ──
+    // 1. First choice: twitter_handle
+    // 2. Second choice: username (e.g. from log-in schema)
+    // 3. Last resort: custom name template using the user ID
+    const TWITTER_HANDLE = userSession.twitter_handle || userSession.username || `creator_${CREATOR_ID}`;
+
+    document.getElementById('header-handle').textContent = `@${TWITTER_HANDLE}`;
+    document.getElementById('header-id').textContent = `ID: ${CREATOR_ID}`;
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/auth.html';
+    }
+
+    // ── Global Memory Arrays for Dynamic Inventory Pagination ──
+    let creatorMarketplaceItems = [];      
+    let filteredCreatorItems = [];         
+    let creatorCurrentPage = 1;            
+    const creatorItemsPerPage = 5;         
+
+    // ── Feed View Navigation Switcher ──────────────────────────
+    function switchTab(target) {
+      const campBtn = document.getElementById('tab-campaigns');
+      const marketBtn = document.getElementById('tab-marketplace');
+      const campSection = document.getElementById('section-campaigns');
+      const marketSection = document.getElementById('section-marketplace');
+
+      if (target === 'campaigns') {
+        campSection.style.display = 'block';
+        marketSection.style.display = 'none';
+        campBtn.style.cssText = 'background: white; color: var(--text-main); box-shadow: var(--shadow-sm);';
+        marketBtn.style.cssText = 'background: transparent; color: var(--text-muted);';
+      } else {
+        campSection.style.display = 'none';
+        marketSection.style.display = 'block';
+        campBtn.style.cssText = 'background: transparent; color: var(--text-muted);';
+        marketBtn.style.cssText = 'background: white; color: var(--text-main); box-shadow: var(--shadow-sm);';
+        loadMarketplaceProducts();
+      }
+    }
+
+    // ── Live Stream Ad-Click Notifications (SSE Connection) ───────────
+    function initializeNotificationStream() {
+      const eventSource = new EventSource('/api/notifications/stream');
+
+      eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'AD_CLICK') {
+          showLiveNotificationToast(data.title, data.message);
+        }
+      };
+
+      eventSource.onerror = function() {
+        console.log("Real-time stream disconnected. Reconnecting automatically...");
+      };
+    }
+
+    // ── Check URL for Ad Redirects ──────────────────────────────
+    function checkForLandingNotification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      if (urlParams.get('clicked') === 'true') {
+        const title = urlParams.get('campaignTitle') || 'Your Active Ad';
+        
+        showLiveNotificationToast(
+          '🔥 New Ad Click!', 
+          `Someone just clicked your link for "${title}" on the travel blog!`
+        );
+
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    // Toast UI Generator Engine
+    function showLiveNotificationToast(title, message) {
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position:fixed; bottom:20px; right:20px; z-index:9999; max-width:340px; width:calc(100% - 40px);';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        background: #0f172a;
+        color: white;
+        padding: 16px;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        margin-top: 12px;
+        transform: translateY(30px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        border-left: 4px solid #38bdf8;
+      `;
+
+      toast.innerHTML = `
+        <div style="font-weight:700; font-size:14px; color:#38bdf8; margin-bottom:4px;">${title}</div>
+        <div style="font-size:12px; color:#cbd5e1; line-height:1.4;">${message}</div>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+      }, 50);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateY(-20px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+      }, 5000);
+    }
+
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const campaigns = await res.json();
+        const container = document.getElementById('campaigns');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No active campaigns yet.</p>';
+          return;
+        }
+
+        const unique = campaigns.filter((c, i, arr) => arr.findIndex(x => x.id === c.id) === i);
+
+        container.innerHTML = unique.map(camp => `
+          <div class="card">
+            <h3>${camp.title}</h3>
+            <p>${camp.description}</p>
+            <div class="meta">
+              <span class="payout">₹${camp.payout_per_post}</span>
+              <span class="hashtag">${camp.required_hashtag}</span>
+            </div>
+            <input type="text" id="url-${camp.id}" placeholder="Paste your X post URL here..." />
+            <button onclick="submitPost(${camp.id})" id="btn-${camp.id}">Submit Proof Link</button>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        document.getElementById('campaigns').innerHTML =
+          '<p class="loading">Failed to load campaigns. Is your server running?</p>';
+      }
+    }
+
+    async function loadMarketplaceProducts() {
+      const container = document.getElementById('marketplace-list');
+      container.innerHTML = '<p class="loading">Loading available product lines...</p>';
+      document.getElementById('pagination-wrapper').style.display = 'none';
+      
+      try {
+        const res = await fetch('/api/marketplace', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        creatorMarketplaceItems = await res.json();
+        filteredCreatorItems = [...creatorMarketplaceItems];
+        
+        creatorCurrentPage = 1;
+        document.getElementById('marketplace-search').value = '';
+
+        renderCreatorMarketplacePage();
+      } catch (err) {
+        container.innerHTML = '<p class="loading">Failed to load marketplace products.</p>';
+      }
+    }
+
+    // ── Search Keyword Filtering Controller ──
+    function handleCreatorMarketplaceSearch() {
+      const query = document.getElementById('marketplace-search').value.toLowerCase().trim();
+
+      filteredCreatorItems = creatorMarketplaceItems.filter(product => {
+        const titleMatch = product.title ? product.title.toLowerCase().includes(query) : false;
+        const descMatch = product.description ? product.description.toLowerCase().includes(query) : false;
+        return titleMatch || descMatch;
+      });
+
+      creatorCurrentPage = 1;
+      renderCreatorMarketplacePage();
+    }
+
+    function renderCreatorMarketplacePage() {
+      const container = document.getElementById('marketplace-list');
+      const paginationWrapper = document.getElementById('pagination-wrapper');
+
+      if (!filteredCreatorItems.length) {
+        container.innerHTML = '<p class="loading">No listed items match that description lookup parameter.</p>';
+        paginationWrapper.style.display = 'none';
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredCreatorItems.length / creatorItemsPerPage);
+      const startIndex = (creatorCurrentPage - 1) * creatorItemsPerPage;
+      const endIndex = startIndex + creatorItemsPerPage;
+      const paginatedItems = filteredCreatorItems.slice(startIndex, endIndex);
+
+      container.innerHTML = paginatedItems.map(product => {
+        const uniqueAffiliateUrl = `${window.location.origin}/r/${product.id}/${CREATOR_ID}`;
+        const tweetIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          `Checking out this amazing ${product.title}! Get yours here: ${uniqueAffiliateUrl} #nanotest`
+        )}`;
+
+        return `
+          <div class="card" style="display: flex; flex-direction: column; gap: 14px; padding: 20px; margin-bottom: 0;">
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+              ${product.image_url ? `<img src="${product.image_url}" style="width: 76px; height: 76px; object-fit: cover; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);" />` : ''}
+              <div style="flex: 1;">
+                <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">${product.title}</h4>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4; margin-bottom: 8px;">${product.description}</p>
+                <div style="font-weight: 800; color: var(--text-main); font-size: 15px;">₹${product.price}</div>
+              </div>
+            </div>
+            
+            <div style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.15); padding: 10px 14px; border-radius: var(--radius-md); font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--success-text); font-weight: 700;">💰 Earn ${product.commission_percentage}% per order</span>
+              <span style="color: var(--primary); font-weight: 700; background: var(--primary-glow); padding: 2px 10px; border-radius: 12px; font-size: 11px;">#nanotest</span>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 4px;">
+              <button onclick="navigator.clipboard.writeText('${uniqueAffiliateUrl}'); alert('Custom link copied!')" style="background: white; color: var(--text-main); border: 1px solid #e2e8f0; flex: 1; padding: 11px; font-size:13px; margin-bottom: 0; box-shadow: var(--shadow-sm);">
+                📋 Copy Affiliate Link
+              </button>
+              <a href="${tweetIntent}" target="_blank" style="display: block; background: #0f172a; color: white; text-decoration: none; border-radius: var(--radius-md); padding: 12px; text-align: center; font-weight: 700; font-size: 13px; flex: 1.3; transition: var(--transition); box-shadow: 0 4px 12px rgba(15,23,42,0.15);">
+                🐦 Share on X
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (filteredCreatorItems.length > creatorItemsPerPage) {
+        paginationWrapper.style.display = 'flex';
+        document.getElementById('pagination-indicator').textContent = `Page ${creatorCurrentPage} of ${totalPages}`;
+        document.getElementById('btn-prev-page').disabled = (creatorCurrentPage === 1);
+        document.getElementById('btn-next-page').disabled = (creatorCurrentPage === totalPages);
+      } else {
+        paginationWrapper.style.display = 'none';
+      }
+    }
+
+    // ── Pagination Click Increment Controller ──
+    function changeCreatorMarketplacePage(direction) {
+      const totalPages = Math.ceil(filteredCreatorItems.length / creatorItemsPerPage);
+      const targetPage = creatorCurrentPage + direction;
+
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        creatorCurrentPage = targetPage;
+        renderCreatorMarketplacePage();
+        document.getElementById('marketplace-search').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    async function submitPost(campaignId) {
+      const urlInput = document.getElementById(`url-${campaignId}`);
+      const btn = document.getElementById(`btn-${campaignId}`);
+      const postUrl = urlInput.value.trim();
+
+      if (!postUrl) {
+        showMessage('Please paste your X post URL first!', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying post data...';
+      document.getElementById('message').className = 'message';
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            creator_id: CREATOR_ID,
+            campaign_id: campaignId,
+            post_url: postUrl
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showMessage(`✅ Post Verified! Your payout: ₹${data.payout_amount}`, 'success');
+          urlInput.value = '';
+          loadSubmissions();
+        } else {
+          showMessage(`❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showMessage('❌ Could not reach server. Is it running?', 'error');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Submit Proof Link';
+    }
+
+    async function loadSubmissions() {
+      try {
+        const res = await fetch(`/api/submissions/${CREATOR_ID}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const subs = await res.json();
+        const container = document.getElementById('submissions');
+
+        if (!subs.length) {
+          container.innerHTML = '<p class="loading">No logged items submitted yet.</p>';
+          return;
+        }
+
+        container.innerHTML = subs.map(sub => `
+          <div class="sub-item">
+            <div>
+              <div class="title">${sub.campaign_title}</div>
+              <div class="date">₹${sub.payout_amount} • ${new Date(sub.submitted_at).toLocaleDateString()}</div>
+            </div>
+            <span class="badge ${sub.status}">${sub.status}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('submissions').innerHTML =
+          '<p class="loading">Failed to load submissions.</p>';
+      }
+    }
+
+    function showMessage(text, type) {
+      const msgBox = document.getElementById('message');
+      msgBox.textContent = text;
+      msgBox.className = `message ${type}`;
+    }
+
+    // ── Initialization Framework Execution ───────────
+    loadCampaigns();
+    loadSubmissions();
+    initializeNotificationStream(); 
+    checkForLandingNotification();
+  </script>
+
+</body>
+</html>

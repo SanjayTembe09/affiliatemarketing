@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NanoConnect - Brand Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #7c3aed;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 { font-size: 22px; font-weight: 700; }
+    header p { font-size: 13px; opacity: 0.85; }
+
+    .nav {
+      background: white;
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .nav a {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #64748b;
+    }
+
+    .nav a.active {
+      color: #7c3aed;
+      border-bottom: 3px solid #7c3aed;
+    }
+
+    .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+
+    h2 { font-size: 18px; color: #1e293b; margin-bottom: 16px; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+
+    label:first-child { margin-top: 0; }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus { border-color: #7c3aed; }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    button {
+      width: 100%;
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+
+    button:hover { background: #6d28d9; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .message {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .message.success { background: #dcfce7; color: #166534; display: block; }
+    .message.error { background: #fee2e2; color: #991b1b; display: block; }
+
+    .campaign-item {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .campaign-item h3 { font-size: 15px; font-weight: 700; color: #1e293b; }
+    .campaign-item p { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    .campaign-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .payout { color: #16a34a; font-weight: 700; font-size: 14px; }
+
+    .badge {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+
+    .loading { text-align: center; color: #94a3b8; font-size: 14px; padding: 20px; }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid #e2e8f0;
+      color: #64748b;
+      background: white;
+    }
+
+    .tab.active {
+      background: #7c3aed;
+      color: white;
+      border-color: #7c3aed;
+    }
+
+    .section { display: none; }
+    .section.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🏷️ NanoConnect</h1>
+      <p>Brand Dashboard</p>
+    </div>
+    <div style="text-align:right">
+      <p style="font-weight:600">RM Workz</p>
+      <p style="font-size:12px; opacity:0.7">Brand ID: 1</p>
+    </div>
+  </header>
+
+  <!-- Nav -->
+  <div class="nav">
+    <a href="/" >👤 Creator View</a>
+    <a href="/brand.html" class="active">🏷️ Brand View</a>
+  </div>
+
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('create')">➕ Create Campaign</div>
+      <div class="tab" onclick="switchTab('list')">📋 My Campaigns</div>
+    </div>
+
+    <!-- Create Campaign Form -->
+    <div id="create-section" class="section visible">
+      <div class="card">
+        <h2>Create New Campaign</h2>
+
+        <label>Campaign Title</label>
+        <input type="text" id="title" placeholder="e.g. CeraVe Skincare Campaign" />
+
+        <label>Description</label>
+        <textarea id="description" placeholder="Tell influencers what to post about..."></textarea>
+
+        <label>Product URL (the link influencers must include in their post)</label>
+        <input type="text" id="product_url" placeholder="e.g. amazon.in/dp/B01MSSDEPK" />
+
+        <label>Required Hashtag</label>
+        <input type="text" id="hashtag" placeholder="e.g. #nanotest" />
+
+        <label>Payout Per Post (₹)</label>
+        <input type="number" id="payout" placeholder="e.g. 500" />
+
+        <button onclick="createCampaign()" id="create-btn">🚀 Launch Campaign</button>
+      </div>
+
+      <div id="message" class="message"></div>
+    </div>
+
+    <!-- My Campaigns List -->
+    <div id="list-section" class="section">
+      <h2>My Campaigns</h2>
+      <div id="campaigns-list">
+        <p class="loading">Loading...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const BRAND_ID = 1; // Your test brand ID
+
+    // ── Tab Switching ───────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+
+      if (tab === 'create') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('create-section').classList.add('visible');
+      } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('list-section').classList.add('visible');
+        loadCampaigns();
+      }
+    }
+
+    // ── Create Campaign ─────────────────────────────
+    async function createCampaign() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const product_url = document.getElementById('product_url').value.trim();
+      const hashtag = document.getElementById('hashtag').value.trim();
+      const payout = document.getElementById('payout').value.trim();
+
+      // Basic validation
+      if (!title || !description || !product_url || !hashtag || !payout) {
+        showMessage('❌ Please fill in all fields!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('create-btn');
+      btn.disabled = true;
+      btn.textContent = 'Launching...';
+
+      try {
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            brand_id: BRAND_ID,
+            title,
+            description,
+            product_url,
+            required_hashtag: hashtag,
+            payout_per_post: parseFloat(payout)
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showMessage('✅ Campaign launched successfully!', 'success');
+          // Clear form
+          document.getElementById('title').value = '';
+          document.getElementById('description').value = '';
+          document.getElementById('product_url').value = '';
+          document.getElementById('hashtag').value = '';
+          document.getElementById('payout').value = '';
+        } else {
+          showMessage(`❌ ${data.error}`, 'error');
+        }
+      } catch (err) {
+        showMessage('❌ Could not reach server.', 'error');
+      }
+
+      btn.disabled = false;
+      btn.textContent = '🚀 Launch Campaign';
+    }
+
+    // ── Load My Campaigns ───────────────────────────
+    async function loadCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns');
+        const campaigns = await res.json();
+        const container = document.getElementById('campaigns-list');
+
+        if (!campaigns.length) {
+          container.innerHTML = '<p class="loading">No campaigns yet. Create one!</p>';
+          return;
+        }
+
+        container.innerHTML = campaigns.map(camp => `
+          <div class="campaign-item">
+            <h3>${camp.title}</h3>
+            <p>${camp.description}</p>
+            <div class="campaign-meta">
+              <span class="payout">₹${camp.payout_per_post} per post</span>
+              <span class="badge">${camp.required_hashtag}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        document.getElementById('campaigns-list').innerHTML =
+          '<p class="loading">Failed to load campaigns.</p>';
+      }
+    }
+
+    // ── Helper ──────────────────────────────────────
+    function showMessage(text, type) {
+      const msgBox = document.getElementById('message');
+      msgBox.textContent = text;
+      msgBox.className = `message ${type}`;
+    }
+  </script>
+
+</body>
+</html>
