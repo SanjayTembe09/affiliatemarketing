@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -106,11 +107,11 @@ class ApiService {
   static Future<List<dynamic>> getCampaigns() async {
     final headers = await _authHeaders();
     final url = Uri.parse('$baseUrl/api/campaigns/');
-    print('API_DEBUG: GET Request -> $url');
+    debugPrint('API_DEBUG: GET Request -> $url');
 
     final response = await http.get(url, headers: headers);
-    print('API_DEBUG: GET Response [Campaigns] Status: ${response.statusCode}');
-    print('API_DEBUG: Body: ${response.body}');
+    debugPrint('API_DEBUG: GET Response [Campaigns] Status: ${response.statusCode}');
+    debugPrint('API_DEBUG: Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
@@ -126,11 +127,11 @@ class ApiService {
   static Future<List<dynamic>> getMarketplaceProducts() async {
     final headers = await _authHeaders();
     final url = Uri.parse('$baseUrl/api/marketplace/');
-    print('API_DEBUG: GET Request -> $url');
+    debugPrint('API_DEBUG: GET Request -> $url');
 
     final response = await http.get(url, headers: headers);
-    print('API_DEBUG: GET Response [Marketplace] Status: ${response.statusCode}');
-    print('API_DEBUG: Body: ${response.body}');
+    debugPrint('API_DEBUG: GET Response [Marketplace] Status: ${response.statusCode}');
+    debugPrint('API_DEBUG: Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
@@ -146,11 +147,11 @@ class ApiService {
   static Future<List<dynamic>> getCreatorProofLogs() async {
     final headers = await _authHeaders();
     final url = Uri.parse('$baseUrl/api/submissions/my-logs');
-    print('API_DEBUG: GET Request -> $url');
+    debugPrint('API_DEBUG: GET Request -> $url');
 
     final response = await http.get(url, headers: headers);
-    print('API_DEBUG: GET Response [Proof Logs] Status: ${response.statusCode}');
-    print('API_DEBUG: Body: ${response.body}');
+    debugPrint('API_DEBUG: GET Response [Proof Logs] Status: ${response.statusCode}');
+    debugPrint('API_DEBUG: Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
@@ -166,11 +167,11 @@ class ApiService {
   static Future<Map<String, dynamic>> getStatsOverview(int creatorId) async {
     final headers = await _authHeaders();
     final url = Uri.parse('$baseUrl/api/stats/overview');
-    print('API_DEBUG: GET Request -> $url');
+    debugPrint('API_DEBUG: GET Request -> $url');
 
     final response = await http.get(url, headers: headers);
-    print('API_DEBUG: GET Response [Stats Overview] Status: ${response.statusCode}');
-    print('API_DEBUG: Body: ${response.body}');
+    debugPrint('API_DEBUG: GET Response [Stats Overview] Status: ${response.statusCode}');
+    debugPrint('API_DEBUG: Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);

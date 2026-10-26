@@ -102,7 +102,9 @@ class _ProductScreenState extends State<ProductScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF0F172A),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.06)),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.06),
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

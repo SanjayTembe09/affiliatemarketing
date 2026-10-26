@@ -169,7 +169,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
     return _allMarketplaceProducts.sublist(startIndex, endIndex);
   }
 
-  void _calculateDynamicStats() {
+  /*void _calculateDynamicStats() {
     double earnedSum = 0.0;
     int clicksSum = 0;
     int conversionsSum = 0;
@@ -203,7 +203,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
     _totalEarned = earnedSum; 
     _totalClicks = clicksSum;
     _conversionRate = conversionPct;
-  }
+  } */
 
   Future<void> _submitVerification(int campaignId, String postUrl) async {
     if (postUrl.isEmpty) {
@@ -233,22 +233,34 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
     }
   }
 
-  void _copyAffiliateLink(dynamic prodId) async {
-    // Construct tracking route URL containing the actual logged-in user/creator ID
-    final trackingUrl = 'http://87.106.214.100:8080/ref/$_currentCreatorId/$prodId';
-    
-    Clipboard.setData(ClipboardData(text: trackingUrl));
+  
+  Future<void> _copyAffiliateLink(dynamic prodId) async {
+    // Construct tracking route URL containing the logged-in creator ID.
+    final trackingUrl =
+        'http://87.106.214.100:8080/ref/$_currentCreatorId/$prodId';
 
-    // Automatically open in browser
-  final uri = Uri.parse(trackingUrl);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
+    await Clipboard.setData(ClipboardData(text: trackingUrl));
+
+    // Automatically open in browser.
+    final uri = Uri.parse(trackingUrl);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    }
+
+    // Avoid using context if this widget has been disposed.
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('📋 Affiliate tracking link copied: $trackingUrl')),
+      SnackBar(
+        content: Text('📋 Affiliate tracking link copied: $trackingUrl'),
+      ),
     );
   }
+
 
   void _signout() async {
     if (!mounted) return;
@@ -295,7 +307,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                           onPressed: _signout,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0F172A),
-                            side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                            side: BorderSide(color: Colors.white.withValues(alpha:0.1)),
                           ),
                           child: const Text('Sign Out', style: TextStyle(color: Colors.white)),
                         ),
@@ -308,7 +320,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.2),
+                          color: Colors.red.withValues(alpha:0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(_errorMessage!, style: const TextStyle(color: Colors.redAccent)),
@@ -337,7 +349,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF0F172A),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                       ),
                       child: Row(
                         children: [
@@ -393,7 +405,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F172A),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                              border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +427,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F172A),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                              border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,7 +449,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F172A),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withOpacity(0.05)),
+                              border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,7 +496,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -580,7 +592,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -661,7 +673,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,7 +725,7 @@ class _CreatorDashboardState extends State<CreatorDashboard> {
                                                   backgroundColor: const Color(0xFF1E293B),
                                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                                  side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                                                  side: BorderSide(color: Colors.white.withValues(alpha:0.1)),
                                                 ),
                                                 icon: const Text('📋', style: TextStyle(fontSize: 12)),
                                                 label: const Text('Copy Link', style: TextStyle(color: Colors.white, fontSize: 12)),

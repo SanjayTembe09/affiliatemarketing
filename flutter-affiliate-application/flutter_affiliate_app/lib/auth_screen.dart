@@ -134,9 +134,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A).withOpacity(0.45),
+                    color: const Color(0xFF0F172A).withValues(alpha: 0.45),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.05),
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -145,7 +147,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           padding: const EdgeInsets.all(12),
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
-                            color: _isError ? Colors.red.withOpacity(0.2) : Colors.green.withOpacity(0.2),
+                            color: _isError ? Colors.red.withValues(alpha: 0.2) : Colors.green.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(_message!, style: TextStyle(color: _isError ? Colors.redAccent : Colors.greenAccent)),
@@ -173,7 +175,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       if (!isLoginMode) ...[
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
-                          value: _selectedRole,
+                          initialValue: _selectedRole,
                           dropdownColor: const Color(0xFF0F172A),
                           items: const [
                             DropdownMenuItem(value: 'creator', child: Text('Creator', style: TextStyle(color: Colors.white))),

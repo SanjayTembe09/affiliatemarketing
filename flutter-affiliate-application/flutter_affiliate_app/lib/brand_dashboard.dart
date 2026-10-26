@@ -395,7 +395,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF0F172A),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.purpleAccent.withOpacity(0.3)),
+                          border: Border.all(color: Colors.purpleAccent.withValues(alpha:0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -412,7 +412,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(color: Colors.red.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+                        decoration: BoxDecoration(color: Colors.red.withValues(alpha:0.2), borderRadius: BorderRadius.circular(12)),
                         child: Text(_errorMessage!, style: const TextStyle(color: Colors.redAccent)),
                       ),
 
@@ -422,7 +422,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF0F172A),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                       ),
                       child: Row(
                         children: [
@@ -478,7 +478,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF0F172A),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                         ),
                         child: Column(
                           children: [
@@ -601,7 +601,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -617,7 +617,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                           if (camp['required_hashtag'] != null && camp['required_hashtag'].toString().isNotEmpty)
                                             Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(color: Colors.purple.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
+                                              decoration: BoxDecoration(color: Colors.purple.withValues(alpha:0.3), borderRadius: BorderRadius.circular(8)),
                                               child: Text(camp['required_hashtag'], style: const TextStyle(color: Colors.purpleAccent, fontSize: 10, fontWeight: FontWeight.bold)),
                                             ),
                                         ],
@@ -672,7 +672,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -727,7 +727,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF0F172A),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                          border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                         ),
                         child: Column(
                           children: [
@@ -848,7 +848,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                           filled: true,
                           fillColor: const Color(0xFF0F172A),
                           prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.white.withOpacity(0.05))),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.white.withValues(alpha:0.05))),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -866,7 +866,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -949,7 +949,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF0F172A),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1007,7 +1007,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
       decoration: BoxDecoration(
         color: const Color(0xFF0F172A),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1018,7 +1018,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
               Text(networkName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(color: Colors.blue.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                decoration: BoxDecoration(color: Colors.blue.withValues(alpha:0.2), borderRadius: BorderRadius.circular(6)),
                 child: Text(categoryLabel, style: const TextStyle(color: Colors.lightBlue, fontSize: 9, fontWeight: FontWeight.bold)),
               ),
             ],
