@@ -109,113 +109,42 @@ class _BrandDashboardState extends State<BrandDashboard> {
     }
   }
 
-  Future<void> _fetchBrandData() async {
+ Future<void> _fetchBrandData() async {
+  if (!mounted) return;
+
+  setState(() {
+    _isLoading = true;
+    _errorMessage = null;
+  });
+
+  try {
+    final results = await Future.wait([
+      ApiService.getCampaigns(),
+      ApiService.getCreatorProofLogs(),
+      ApiService.getMarketplaceProducts(),
+    ]);
+
+    if (!mounted) return;
+
     setState(() {
-      _isLoading = true;
-      _errorMessage = null;
+      _allCampaigns = results[0];
+      _allCommissionLogs = results[1];
+      _allMarketplaceProducts = results[2];
+      _isLoading = false;
+    });
+  } catch (e) {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      _errorMessage =
+          'Failed to load dashboard data. Please try again.';
     });
 
-    try {
-      List<dynamic> campaignsList = [];
-      List<dynamic> logsList = [];
-      List<dynamic> marketList = [];
-
-      try {
-        campaignsList = await ApiService.getCampaigns();
-      } catch (e) {
-        debugPrint('Error fetching campaigns: $e');
-      }
-
-      try {
-        logsList = await ApiService.getCreatorProofLogs();
-      } catch (e) {
-        debugPrint('Error fetching logs: $e');
-      }
-
-      try {
-        marketList = await ApiService.getMarketplaceProducts();
-      } catch (e) {
-        debugPrint('Error fetching marketplace: $e');
-      }
-
-      if (!mounted) return;
-
-      setState(() {
-        _allCampaigns = campaignsList;
-        _allCommissionLogs = logsList;
-        _allMarketplaceProducts = marketList;
-
-        // Fallback Mock Data if empty to match visual specs completely
-        if (_allCampaigns.isEmpty) {
-          _allCampaigns = [
-            {'title': 'Thai Jasmine Rice Serum', 'description': 'Promote face serum to your beauty tip followers!', 'payout_per_post': 500.0, 'category': 'Beauty', 'required_hashtag': '#nanotest', 'product_url': 'http://localhost:3000/'},
-            {'title': 'Explore James Bond Island With Speed Boat Tour', 'description': 'Check out James Bond Island VIP Speedboat Tour Explore the fun with sppes boat and James Bond Island #travel', 'payout_per_post': 500.0, 'category': 'Travel', 'required_hashtag': '#nanotest', 'product_url': 'http://localhost:3000/'},
-            {'title': 'HydroLock Hyaluronic Acid Gel', 'description': 'A lightweight, non-greasy gel moisturizer that provides 72-hour intense skin hydration, beauty treatment.', 'payout_per_post': 500.0, 'category': 'Beauty', 'required_hashtag': '#nanotest', 'product_url': 'http://localhost:3000/'},
-            {'title': 'Tech Panda HA-109 Mini Projector', 'description': 'Portable HD Projector for Home Theater, Movies, Gaming, and Presentations, Compact Design, Easy Setup #tech', 'payout_per_post': 780.0, 'category': 'Tech', 'required_hashtag': '#nanotest', 'product_url': 'https://www.amazon.in/'},
-            {'title': 'Elfora Cable Organizer Case', 'description': 'Durable Double Compartment Travel Pouch for Charger, Phone, Power Bank, Tablet #tech', 'payout_per_post': 59.0, 'category': 'Tech', 'required_hashtag': '#nanotest', 'product_url': 'https://www.amazon.in/'},
-          ];
-        }
-
-        if (_allCommissionLogs.isEmpty) {
-          _allCommissionLogs = [
-            {'title': 'Kerastase Gloss Absolu Glaze Drops Oil-In-Serum For Bouncy, Glossy Hair', 'payout_amount': 380.0, 'type': 'MARKETPLACE'},
-            {'title': 'Destinio Travel Toiletry Bag for Man and Women-Waterproof', 'payout_amount': 170.9, 'type': 'MARKETPLACE'},
-            {'title': 'Hollyland Lark A1 Mini Duo Wireless Lavalier Microphone', 'payout_amount': 439.9, 'type': 'MARKETPLACE'},
-            {'title': 'Olay Regenerist Micosculpting Serum', 'payout_amount': 122.3, 'type': 'MARKETPLACE'},
-            {'title': 'Destinio Travel Toiletry Bag for Man and Women-Waterproof', 'payout_amount': 170.9, 'type': 'MARKETPLACE'},
-          ];
-        }
-
-        if (_allMarketplaceProducts.isEmpty) {
-          _allMarketplaceProducts = [
-            {
-              'title': 'Kerastase Gloss Absolu Glaze Drops Oil-In-Serum For Bouncy, Glossy Hair',
-              'description': 'Kerastase Gloss Absolu Glaze Drops Oil-In-Serum For Bouncy, Glossy Hair, 2X Glossier Hair, 72H Nutrition.',
-              'price': 3800.00,
-              'commission_percentage': 10.0,
-              'image_url': ''
-            },
-            {
-              'title': 'Hollyland Lark A1 Mini Duo Wireless Lavalier Microphone',
-              'description': 'Hollyland Lark A1 Mini Duo Wireless Lavalier Microphone, 48kHz/24-bit Audio, 3-Level Noise Cancellation, 200m Range, Clip-On Mic for iPhone 15/16, Android, YouTube, Podcast & Vlog',
-              'price': 4399.00,
-              'commission_percentage': 10.0,
-              'image_url': ''
-            },
-            {
-              'title': 'Destinio Travel Toiletry Bag for Man and Women-Waterproof',
-              'description': 'Waterproof travel organizer pouch for toiletries and essentials.',
-              'price': 1709.00,
-              'commission_percentage': 10.0,
-              'image_url': ''
-            },
-            {
-              'title': 'Olay Regenerist Micosculpting Serum',
-              'description': 'Olay Regenerist Micosculpting Serum | Hydrated, Plump, Bouncy Skin | With Hyaluronic Acid, Niacinamide and Peptides | Normal, Oily, Dry, Combination Skin | 50ml',
-              'price': 1223.00,
-              'commission_percentage': 10.0,
-              'image_url': ''
-            },
-            {
-              'title': 'Super Shield BB Serum | Tinted BB Cream Serum',
-              'description': 'Super Shield BB Serum | Tinted BB Cream Serum for Natural No-Makeup Look | Mineral Sun Protection with Zinc Oxide | Niacinamide & Vitamin C for Glow | Lightweight Hydrating Skin Tint | Dermatologist Formulated | 30 ml',
-              'price': 599.00,
-              'commission_percentage': 10.0,
-              'image_url': ''
-            }
-          ];
-        }
-
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Failed to load brand dashboard data: $e';
-      });
-    }
+    debugPrint('Error fetching brand dashboard data: $e');
   }
+}
+
 
   // Filtered Marketplace Products based on search query
   List<dynamic> get _filteredMarketplaceProducts {
@@ -407,14 +336,31 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       ),
                     ),
                     const SizedBox(height: 16),
-
-                    if (_errorMessage != null)
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(color: Colors.red.withValues(alpha:0.2), borderRadius: BorderRadius.circular(12)),
-                        child: Text(_errorMessage!, style: const TextStyle(color: Colors.redAccent)),
+                    
+                  if (_errorMessage != null)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _errorMessage!,
+                            style: const TextStyle(color: Colors.redAccent),
+                          ),
+                          const SizedBox(height: 8),
+                          TextButton.icon(
+                            onPressed: _isLoading ? null : _fetchBrandData,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
 
                     // Tab Switcher
                     Container(
@@ -588,7 +534,16 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       const Text('📋 YOUR ACTIVE CAMPAIGNS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
                       const SizedBox(height: 12),
                       currentCampaigns.isEmpty
-                          ? const Center(child: Text('No active campaigns found', style: TextStyle(color: Colors.grey)))
+                          ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(24),
+                              child: Text(
+                                "You haven't created any campaigns yet.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          )
                           : ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -659,7 +614,16 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       const Text('💰 APPROVED COMMISSION LOGS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
                       const SizedBox(height: 12),
                       currentLogs.isEmpty
-                          ? const Center(child: Text('No approved commission logs found', style: TextStyle(color: Colors.grey)))
+                          ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(24),
+                              child: Text(
+                                'No commission records available yet.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          )
                           : ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -853,8 +817,42 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       ),
                       const SizedBox(height: 12),
                       currentMarketplace.isEmpty
-                          ? const Center(child: Padding(padding: EdgeInsets.all(24), child: Text('No listed products found', style: TextStyle(color: Colors.grey))))
-                          : ListView.builder(
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.inventory_2_outlined,
+                                        size: 36,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        _productSearchQuery.trim().isNotEmpty
+                                            ? 'No products match your search.'
+                                            : "You haven't listed any products yet.",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(color: Colors.grey),
+                                      ),
+                                      if (_productSearchQuery.trim().isNotEmpty) ...[
+                                        const SizedBox(height: 12),
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _productSearchQuery = '';
+                                              _marketPage = 1;
+                                            });
+                                          },
+                                          child: const Text('Clear search'),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              )
+                              : ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: currentMarketplace.length,
@@ -936,7 +934,16 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       const Text('💰 APPROVED COMMISSION LOGS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
                       const SizedBox(height: 12),
                       currentLogs.isEmpty
-                          ? const Center(child: Text('No approved commission logs found', style: TextStyle(color: Colors.grey)))
+                          ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(24),
+                              child: Text(
+                                'No commission records available yet.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          )
                           : ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
