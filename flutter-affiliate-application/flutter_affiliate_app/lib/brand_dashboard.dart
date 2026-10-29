@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'auth_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:url_launcher/url_launcher.dart';
+//import 'dart:convert';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class BrandDashboard extends StatefulWidget {
   const BrandDashboard({super.key});
@@ -21,7 +21,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
 
   // Master Lists
   List<dynamic> _allCampaigns = [];
-  List<dynamic> _allCommissionLogs = [];
+  //List<dynamic> _allCommissionLogs = [];
   List<dynamic> _allMarketplaceProducts = [];
 
   // Search filter for Marketplace products
@@ -31,8 +31,13 @@ class _BrandDashboardState extends State<BrandDashboard> {
   int _campaignPage = 1;
   final int _campaignLimit = 5;
 
-  int _logPage = 1;
-  final int _logLimit = 5;
+  int get _campaignTotalPages {
+  if (_allCampaigns.isEmpty) return 0;
+  return (_allCampaigns.length / _campaignLimit).ceil();
+}
+
+  //int _logPage = 1;
+  //final int _logLimit = 5;
 
   int _marketPage = 1;
   final int _marketLimit = 4;
@@ -41,9 +46,14 @@ class _BrandDashboardState extends State<BrandDashboard> {
   final _campTitleController = TextEditingController();
   final _campDescController = TextEditingController();
   final _campUrlController = TextEditingController();
+  final _campPriceController = TextEditingController();
   final _campPayoutController = TextEditingController();
-  final _campHashtagController = TextEditingController();
-  String _selectedCategory = 'Tech'; // Default Category
+  final _campHashtagController =
+      TextEditingController(text: '#nanotest');
+
+  int? _selectedCampaignProductIndex;
+
+  String _selectedCategory = 'Tech';
 
   // Form Controllers for Marketplace Product Creation
   final _prodTitleController = TextEditingController();
@@ -59,7 +69,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
     _fetchBrandData();
     
     // Listen for changes in the campaign title to auto-calculate the payout
-    _campTitleController.addListener(_autoCalculateCampaignPayout);
+    //_campTitleController.addListener(_autoCalculateCampaignPayout);
   }
 
   @override
@@ -67,6 +77,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
     _campTitleController.dispose();
     _campDescController.dispose();
     _campUrlController.dispose();
+    _campPriceController.dispose();
     _campPayoutController.dispose();
     _campHashtagController.dispose();
     _prodTitleController.dispose();
@@ -78,73 +89,73 @@ class _BrandDashboardState extends State<BrandDashboard> {
     super.dispose();
   }
 
-  void _autoCalculateCampaignPayout() {
-    final enteredTitle = _campTitleController.text.trim().toLowerCase();
-    if (enteredTitle.isEmpty) return;
+  void _onCampaignProductSelected(int? index) {
+    if (index == null ||
+        index < 0 ||
+        index >= _allMarketplaceProducts.length) {
+      return;
+    }
 
-    // Search through loaded marketplace inventory for a matching product title
-    final matchingProduct = _allMarketplaceProducts.firstWhere(
-      (prod) => (prod['title'] ?? '').toString().toLowerCase() == enteredTitle,
-      orElse: () => null,
-    );
+    final product = _allMarketplaceProducts[index];
 
-    if (matchingProduct != null) {
-      final double price = double.tryParse(matchingProduct['price'].toString()) ?? 0.0;
-      final double commission = double.tryParse(matchingProduct['commission_percentage'].toString()) ?? 10.0;
-      
-      // Formula: Payout = Retail Price * (Commission % / 100)
-      final double calculatedPayout = price * (commission / 100);
+    final price =
+        double.tryParse((product['price'] ?? '0').toString()) ?? 0.0;
+    final commission = double.tryParse(
+          (product['commission_percentage'] ?? '10').toString(),
+        ) ??
+        10.0;
+
+    final payout = price * commission / 100;
+
+    setState(() {
+      _selectedCampaignProductIndex = index;
+
+      // Keep a manually entered campaign title; otherwise use the product title.
+      if (_campTitleController.text.trim().isEmpty) {
+        _campTitleController.text = (product['title'] ?? '').toString();
+      }
+
+      _campDescController.text = (product['description'] ?? '').toString();
+      _campUrlController.text = (product['product_url'] ?? '').toString();
+      _campPriceController.text = price.toStringAsFixed(2);
+      _campPayoutController.text = payout.toStringAsFixed(2);
+    });
+  }
+
+ 
+  Future<void> _fetchBrandData() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final results = await Future.wait([
+        ApiService.getCampaigns(),
+        ApiService.getMarketplaceProducts(),
+      ]);
+
+      if (!mounted) return;
 
       setState(() {
-        _campPayoutController.text = calculatedPayout.toStringAsFixed(2);
-        
-        // Optionally auto-fill other fields if they are empty
-        if (_campDescController.text.isEmpty) {
-          _campDescController.text = matchingProduct['description'] ?? '';
-        }
-        if (_campUrlController.text.isEmpty) {
-          _campUrlController.text = matchingProduct['product_url'] ?? '';
-        }
+        _allCampaigns = results[0];
+        _allMarketplaceProducts = results[1];
+        _isLoading = false;
       });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _errorMessage =
+            'Failed to load dashboard data. Please try again.';
+      });
+
+      debugPrint('Error fetching brand dashboard data: $e');
     }
   }
-
- Future<void> _fetchBrandData() async {
-  if (!mounted) return;
-
-  setState(() {
-    _isLoading = true;
-    _errorMessage = null;
-  });
-
-  try {
-    final results = await Future.wait([
-      ApiService.getCampaigns(),
-      ApiService.getCreatorProofLogs(),
-      ApiService.getMarketplaceProducts(),
-    ]);
-
-    if (!mounted) return;
-
-    setState(() {
-      _allCampaigns = results[0];
-      _allCommissionLogs = results[1];
-      _allMarketplaceProducts = results[2];
-      _isLoading = false;
-    });
-  } catch (e) {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = false;
-      _errorMessage =
-          'Failed to load dashboard data. Please try again.';
-    });
-
-    debugPrint('Error fetching brand dashboard data: $e');
-  }
-}
-
 
   // Filtered Marketplace Products based on search query
   List<dynamic> get _filteredMarketplaceProducts {
@@ -167,12 +178,12 @@ class _BrandDashboardState extends State<BrandDashboard> {
     return _allCampaigns.sublist(startIndex, endIndex);
   }
 
-  List<dynamic> get _paginatedLogs {
+  /*List<dynamic> get _paginatedLogs {
     final startIndex = (_logPage - 1) * _logLimit;
     if (startIndex >= _allCommissionLogs.length) return [];
     final endIndex = (startIndex + _logLimit < _allCommissionLogs.length) ? startIndex + _logLimit : _allCommissionLogs.length;
     return _allCommissionLogs.sublist(startIndex, endIndex);
-  }
+  } */
 
   List<dynamic> get _paginatedMarketplace {
     final filtered = _filteredMarketplaceProducts;
@@ -182,41 +193,70 @@ class _BrandDashboardState extends State<BrandDashboard> {
     return filtered.sublist(startIndex, endIndex);
   }
 
-  Future<void> _createCampaign() async {
-    if (_campTitleController.text.isEmpty || _campPayoutController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('❌ Please fill out required campaign fields')),
-      );
-      return;
-    }
+  
+Future<void> _createCampaign() async {
+  if (_selectedCampaignProductIndex == null ||
+      _campTitleController.text.trim().isEmpty ||
+      _campDescController.text.trim().isEmpty ||
+      _campUrlController.text.trim().isEmpty ||
+      _campHashtagController.text.trim().isEmpty ||
+      _campPriceController.text.trim().isEmpty ||
+      _campPayoutController.text.trim().isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Please select a marketplace product and fill out all required campaign fields.',
+        ),
+      ),
+    );
+    return;
+  }
 
-    final result = await ApiService.postData('/api/campaigns/', {
-      'title': _campTitleController.text.trim(),
-      'description': _campDescController.text.trim(),
-      'category': _selectedCategory,
-      'product_url': _campUrlController.text.trim(),
-      'required_hashtag': _campHashtagController.text.trim(),
-      'payout_per_post': double.tryParse(_campPayoutController.text.trim()) ?? 0.0,
+  final result = await ApiService.postData('/api/campaigns/', {
+    'title': _campTitleController.text.trim(),
+    'description': _campDescController.text.trim(),
+    'category': _selectedCategory,
+    'product_url': _campUrlController.text.trim(),
+    'required_hashtag': _campHashtagController.text.trim(),
+    'payout_per_post':
+        double.tryParse(_campPayoutController.text.trim()) ?? 0.0,
+  });
+
+  if (!mounted) return;
+
+  if (result['success'] == true) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('✅ Campaign launched successfully!'),
+      ),
+    );
+
+    // Clear the campaign form after successful creation.
+    _campTitleController.clear();
+    _campDescController.clear();
+    _campUrlController.clear();
+    _campPriceController.clear();
+    _campPayoutController.clear();
+
+    // Restore the default hashtag.
+    _campHashtagController.text = '#nanotest';
+
+    // Clear the selected marketplace product.
+    setState(() {
+      _selectedCampaignProductIndex = null;
     });
 
-    if (!mounted) return;
-
-    if (result['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Campaign launched successfully!')),
-      );
-      _campTitleController.clear();
-      _campDescController.clear();
-      _campUrlController.clear();
-      _campPayoutController.clear();
-      _campHashtagController.clear();
-      _fetchBrandData();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Error: ${result['error']}')),
-      );
-    }
+    // Refresh dashboard data.
+    _fetchBrandData();
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('❌ Error: ${result['error']}'),
+      ),
+    );
   }
+}
+
 
   Future<void> _createProduct() async {
     if (_prodTitleController.text.isEmpty || _prodPriceController.text.isEmpty) {
@@ -265,14 +305,14 @@ class _BrandDashboardState extends State<BrandDashboard> {
   @override
   Widget build(BuildContext context) {
     final currentCampaigns = _paginatedCampaigns;
-    final currentLogs = _paginatedLogs;
+    //final currentLogs = _paginatedLogs;
     final currentMarketplace = _paginatedMarketplace;
     final filteredMarketplaceCount = _filteredMarketplaceProducts.length;
 
     // Filter campaigns for connected native blog networks matching exact category
-    final travelCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'travel').toList();
-    final beautyCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'beauty').toList();
-    final techCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'tech').toList();
+    //final travelCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'travel').toList();
+    //final beautyCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'beauty').toList();
+    //final techCampaigns = _allCampaigns.where((c) => (c['category'] ?? '').toString().toLowerCase() == 'tech').toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFF020617),
@@ -428,6 +468,51 @@ class _BrandDashboardState extends State<BrandDashboard> {
                         ),
                         child: Column(
                           children: [
+                            Text(
+                              'Select Marketplace Product',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.black26,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<int>(
+                                  value: _selectedCampaignProductIndex,
+                                  hint: const Text(
+                                    'Choose a marketplace product',
+                                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                                  ),
+                                  dropdownColor: const Color(0xFF0F172A),
+                                  isExpanded: true,
+                                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                                  items: List.generate(_allMarketplaceProducts.length, (index) {
+                                    final product = _allMarketplaceProducts[index];
+                                    final title = (product['title'] ?? 'Untitled Product').toString();
+                                    final price = (product['price'] ?? 0).toString();
+
+                                    return DropdownMenuItem<int>(
+                                      value: index,
+                                      child: Text(
+                                        '$title (₹$price)',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }),
+                                  onChanged: _allMarketplaceProducts.isEmpty
+                                      ? null
+                                      : _onCampaignProductSelected,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
                             TextField(
                               controller: _campTitleController,
                               style: const TextStyle(color: Colors.white, fontSize: 13),
@@ -484,6 +569,22 @@ class _BrandDashboardState extends State<BrandDashboard> {
                                 filled: true,
                                 fillColor: Colors.black26,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            TextField(
+                              controller: _campPriceController,
+                              readOnly: true,
+                              style: const TextStyle(color: Colors.white, fontSize: 13),
+                              decoration: InputDecoration(
+                                labelText: 'Product Price (₹)',
+                                labelStyle: const TextStyle(color: Colors.grey),
+                                filled: true,
+                                fillColor: Colors.black26,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -591,17 +692,35 @@ class _BrandDashboardState extends State<BrandDashboard> {
                             onPressed: _campaignPage > 1 ? () => setState(() => _campaignPage--) : null,
                             child: Text('PREV', style: TextStyle(color: _campaignPage > 1 ? Colors.lightBlue : Colors.grey)),
                           ),
-                          Text('Page $_campaignPage of 3', style: const TextStyle(color: Colors.lightBlue, fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text(
+                            _campaignTotalPages == 0
+                                ? 'Page 0 of 0'
+                                : 'Page $_campaignPage of $_campaignTotalPages',
+                            style: const TextStyle(
+                              color: Colors.lightBlue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           TextButton(
-                            onPressed: (_campaignPage * _campaignLimit) < _allCampaigns.length ? () => setState(() => _campaignPage++) : null,
-                            child: Text('NEXT', style: TextStyle(color: (_campaignPage * _campaignLimit) < _allCampaigns.length ? Colors.lightBlue : Colors.grey)),
+                            onPressed: _campaignPage < _campaignTotalPages
+                            ? () => setState(() => _campaignPage++)
+                            : null,
+                            child: Text(
+                              'NEXT',
+                              style: TextStyle(
+                                color: _campaignPage < _campaignTotalPages
+                                    ? Colors.lightBlue
+                                    : Colors.grey,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
 
                       // 3. CONNECTED NATIVE BLOG NETWORKS
-                      const Text('💻 CONNECTED NATIVE BLOG NETWORKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
+                      /*const Text('💻 CONNECTED NATIVE BLOG NETWORKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
                       const SizedBox(height: 12),
                       _buildBlogNetworkCard(context, 'Wander Trails', 'TRAVEL', travelCampaigns),
                       const SizedBox(height: 16),
@@ -679,7 +798,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                             child: Text('NEXT', style: TextStyle(color: (_logPage * _logLimit) < _allCommissionLogs.length ? Colors.lightBlue : Colors.grey)),
                           ),
                         ],
-                      ),
+                      ), */
                     ] else ...[
                       // MARKETPLACE PRODUCTS TAB
 
@@ -921,7 +1040,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                       const SizedBox(height: 24),
 
                       // 3. CONNECTED NATIVE BLOG NETWORKS WITH CATEGORIES
-                      const Text('💻 CONNECTED NATIVE BLOG NETWORKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
+                     /* const Text('💻 CONNECTED NATIVE BLOG NETWORKS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
                       const SizedBox(height: 12),
                       _buildBlogNetworkCard(context, 'Wander Trails', 'TRAVEL', travelCampaigns),
                       const SizedBox(height: 16),
@@ -999,7 +1118,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
                             child: Text('NEXT', style: TextStyle(color: (_logPage * _logLimit) < _allCommissionLogs.length ? Colors.lightBlue : Colors.grey)),
                           ),
                         ],
-                      ),
+                      ), */
                     ],
                   ],
                 ),
@@ -1008,7 +1127,7 @@ class _BrandDashboardState extends State<BrandDashboard> {
     );
   }
 
-  Widget _buildBlogNetworkCard(BuildContext context, String networkName, String categoryLabel, List<dynamic> campaigns) {
+  /*Widget _buildBlogNetworkCard(BuildContext context, String networkName, String categoryLabel, List<dynamic> campaigns) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1086,5 +1205,5 @@ class _BrandDashboardState extends State<BrandDashboard> {
         ],
       ),
     );
-  }
+  } */
 }
